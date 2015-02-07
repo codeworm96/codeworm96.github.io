@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+ <title>codeworm96</title>
+ <link href="http://codeworm96.github.io//atom.xml" rel="self"/>
+ <link href="http://codeworm96.github.io//"/>
+ <updated>2015-02-07T15:27:19+08:00</updated>
+ <id>http://codeworm96.github.io/</id>
+ <author>
+   <name>codeworm96</name>
+   <email>codeworm96@outlook.com</email>
+ </author>
+
+ 
+ <entry>
+   <title>Hello, world!</title>
+   <link href="http://codeworm96.github.io//2015/02/07/hello-world/"/>
+   <updated>2015-02-07T00:00:00+08:00</updated>
+   <id>http://codeworm96.github.io//2015/02/07/hello-world</id>
+   <content type="html">&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;mi&quot;&gt;1024&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;times&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;hello, world!&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+</content>
+ </entry>
+ 
+
+</feed>
