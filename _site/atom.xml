@@ -4,13 +4,79 @@
  <title>codeworm96</title>
  <link href="http://codeworm96.github.io//atom.xml" rel="self"/>
  <link href="http://codeworm96.github.io//"/>
- <updated>2015-02-07T16:42:45+08:00</updated>
+ <updated>2015-02-08T11:47:13+08:00</updated>
  <id>http://codeworm96.github.io/</id>
  <author>
    <name>codeworm96</name>
    <email>codeworm96@outlook.com</email>
  </author>
 
+ 
+ <entry>
+   <title>解释器折腾记录</title>
+   <link href="http://codeworm96.github.io//2015/02/08/risp/"/>
+   <updated>2015-02-08T00:00:00+08:00</updated>
+   <id>http://codeworm96.github.io//2015/02/08/risp</id>
+   <content type="html">&lt;p&gt;读完《The little schemer》后，为了加深对最后一章的理解，用Ruby试着实现了最后一章的&lt;a href=&quot;https://github.com/codeworm96/risp&quot;&gt;解释器&lt;/a&gt;。&lt;/p&gt;
+
+&lt;h1&gt;Plan&lt;/h1&gt;
+
+&lt;p&gt;首先考虑要实现的功能，书中的解释器实现了:&lt;br /&gt;
+基本函数: cons, car, cdr, null?, eq?, atom?,
+zero?, add1, sub1, number?&lt;br /&gt;
+特殊形式: quote, lambda, cond, 调用&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;为了符合自己的需要，我对其进行一些修改&lt;del&gt;方言?&lt;/del&gt;&lt;br /&gt;
+&lt;ul&gt;
+&lt;li&gt;
+书中为了介绍如何从 zero?, add1, sub1 推导出自然数的各种运算而将他们做为基本函数，但我为了效率决定引入 =, &amp;gt;, &amp;lt;, +, -, *, /, % 而取消了它们。
+&lt;/li&gt;
+&lt;li&gt;
+逻辑运算 not, or, and 虽然可以改写成 cond 语句，但为了方便必须引入，但 or, and 的短路求值使其不能实现为普通函数，我又懒得将它们作为特殊形式，于是我引入了 &amp;#39;Macro&amp;#39;. 然后 if 也被作为 Macro 加了进来。
+&lt;/li&gt;
+&lt;li&gt;
+当然 define 也必须引入，否则太不方便了。
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/p&gt;
+
+&lt;h1&gt;Eval&lt;/h1&gt;
+
+&lt;p&gt;解释器的核心 (eval) 并不复杂，主要是判断表达式的形式，并由合适的过程处理。&lt;/p&gt;
+
+&lt;p&gt;对字面值当然直接返回，对标识符则在当前环境中找到对应值返回。对 quote 直接返回其后的项。cond 是定义的直译，这些都没什么可说的。&lt;/p&gt;
+
+&lt;p&gt;lambda 是创建一个函数，显然参数列表和函数体要被记录，但并不是全部。&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-lisp&quot; data-lang=&quot;lisp&quot;&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;define&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;add1&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;lambda&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                      &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;lambda&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                              &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)))&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;观察上述代码，我们可以看到，为了让 add1 被调用时 a 能找到对应的值，我们还应记录函数创建时的环境。&lt;/p&gt;
+
+&lt;p&gt;对调用可分为 Function 和 Macro. Macro 是将参数变换后再求值。而 Function 是将参数在当前环境求值后，传给对应函数。特别地，对用户定义函数，是以形式参数和实际参数的对应关系扩充定义时的环境，得到新环境，再在此环境下对函数体求值。&lt;/p&gt;
+
+&lt;p&gt;define 我觉得是最难的一部分。&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-lisp&quot; data-lang=&quot;lisp&quot;&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;define&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;length&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;lambda&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;l&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cond&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;null?&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;l&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;length&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cdr&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;l&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)))))))&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;这里的 length 是递归函数，当函数创建时环境中并没有 length 的定义，于是函数便不能正常调用，虽然可以通过 Y-combinator 绕开这个问题，但又导致了define 对递归函数的行为与其他不一致。&lt;/p&gt;
+
+&lt;p&gt;问题的关键在于: define 并没有&lt;strong&gt;创建&lt;/strong&gt;新的环境，而是&lt;strong&gt;修改&lt;/strong&gt;了当前的环境。这样
+define 会在环境中加入 length 的定义，length 便可正常调用了。&lt;/p&gt;
+
+&lt;h1&gt;TODO&lt;/h1&gt;
+
+&lt;ul&gt;
+&lt;li&gt;用户定义的 Macro&lt;/li&gt;
+&lt;li&gt;尾递归优化&lt;/li&gt;
+&lt;li&gt;continuation&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Hello, world!</title>
