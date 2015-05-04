@@ -107,8 +107,9 @@
     </h1>
 
     <span class="post-date">25 Apr 2015</span>
-
-    <p>这一场简直崩了。一开始看题发现第三题还比较可做，题中的关系反自反，非对称，非传递性质并不好，来了一下对称闭包，观察到关系图中并没有环，结果想到了二分图，并没有做出。
+    <div class="post-content-truncate">
+    
+      <p>这一场简直崩了。一开始看题发现第三题还比较可做，题中的关系反自反，非对称，非传递性质并不好，来了一下对称闭包，观察到关系图中并没有环，结果想到了二分图，并没有做出。
 后来发现对称闭包的补关系是相容关系，性质较好，可将题目化为求最大相容类中元素最多的一个有多少元素，然后写了个O(n^3)的解，过了小数据。
 （后来了解到最大独立集的概念，正确的展开是有关系图无环-&gt;这是<del>树</del>森林(可能不联通)-&gt;树形dp求最大独立集)</p>
 
@@ -118,6 +119,8 @@
 
 <p>（还好没有爆零）</p>
 
+    
+    </div>
   </div>
   
   <div class="post">
@@ -128,410 +131,17 @@
     </h1>
 
     <span class="post-date">20 Apr 2015</span>
-
-    <p>最近做了编程之美的资格赛，感觉难度大概是提高组难度左右，
+    <div class="post-content-truncate">
+    
+      <p>最近做了编程之美的资格赛，感觉难度大概是提高组难度左右，
 但感觉自己已经很久不搞这种竞赛手速与想题速度下降很大。
 <img src="/public/upload/bop_qual.png" />
 (竟然没fst～）
 现在把自己的解法分享一下，顺便做个记录。</p>
 
-<h1>题目1 : 2月29日</h1>
 
-<p>时间限制:2000ms
-单点时限:1000ms
-内存限制:256MB</p>
-
-<h2>描述</h2>
-
-<p>给定两个日期，计算这两个日期之间有多少个2月29日（包括起始日期）。
-只有闰年有2月29日，满足以下一个条件的年份为闰年：
-1. 年份能被4整除但不能被100整除
-2. 年份能被400整除</p>
-
-<h2>输入</h2>
-
-<p>第一行为一个整数T，表示数据组数。
-之后每组数据包含两行。每一行格式为&quot;month day, year&quot;，表示一个日期。month为{&quot;January&quot;, &quot;February&quot;, &quot;March&quot;, &quot;April&quot;, &quot;May&quot;, &quot;June&quot;, &quot;July&quot;, &quot;August&quot;, &quot;September&quot;, &quot;October&quot;, &quot;November&quot; , &quot;December&quot;}中的一个字符串。day与year为两个数字。
-数据保证给定的日期合法且第一个日期早于或等于第二个日期。</p>
-
-<h2>输出</h2>
-
-<p>对于每组数据输出一行，形如&quot;Case #X: Y&quot;。X为数据组数，从1开始，Y为答案。</p>
-
-<h2>数据范围</h2>
-
-<p>1 ≤ T ≤ 550
-小数据：
-2000 ≤ year ≤ 3000
-大数据：
-2000 ≤ year ≤ 2×109</p>
-
-<h2>样例输入</h2>
-
-<pre>
-4
-January 12, 2012
-March 19, 2012
-August 12, 2899
-August 12, 2901
-August 12, 2000
-August 12, 2005
-February 29, 2004
-February 29, 2012
-</pre>
-
-<h2>样例输出</h2>
-
-<pre>
-Case #1: 1
-Case #2: 0
-Case #3: 1
-Case #4: 3
-</pre>
-
-<h2>思路</h2>
-
-<p>签到题，并不难。边界要认真讨论一下，中间的年份运用容斥原理，便能算出闰年个数。</p>
-
-<h2>code</h2>
-
-<div class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="cp">#include &lt;iostream&gt;</span>
-<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
-<span class="k">const</span> <span class="kt">int</span> <span class="n">goal</span> <span class="o">=</span> <span class="mi">60</span><span class="p">;</span>
-
-<span class="kt">bool</span> <span class="nf">isleap</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="o">%</span><span class="mi">4</span><span class="o">==</span><span class="mi">0</span><span class="o">&amp;&amp;</span><span class="n">x</span><span class="o">%</span><span class="mi">100</span><span class="o">!=</span><span class="mi">0</span><span class="p">)</span><span class="o">||</span><span class="p">(</span><span class="n">x</span><span class="o">%</span><span class="mi">400</span><span class="o">==</span><span class="mi">0</span><span class="p">);</span>
-<span class="p">}</span>
-<span class="kt">int</span> <span class="nf">dayofyear</span><span class="p">(</span><span class="kt">int</span> <span class="n">y</span><span class="p">,</span> <span class="kt">int</span> <span class="n">m</span><span class="p">,</span> <span class="kt">int</span> <span class="n">x</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="kt">int</span> <span class="n">ans</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span>
-  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">m</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">){</span>
-    <span class="k">switch</span><span class="p">(</span><span class="n">i</span><span class="p">){</span>
-      <span class="k">case</span> <span class="mi">1</span><span class="o">:</span>
-      <span class="k">case</span> <span class="mi">3</span><span class="o">:</span>
-      <span class="k">case</span> <span class="mi">5</span><span class="o">:</span>
-      <span class="k">case</span> <span class="mi">7</span><span class="o">:</span>
-      <span class="k">case</span> <span class="mi">8</span><span class="o">:</span>
-      <span class="k">case</span> <span class="mi">10</span><span class="o">:</span>
-      <span class="k">case</span> <span class="mi">12</span><span class="o">:</span>
-        <span class="n">ans</span> <span class="o">+=</span> <span class="mi">31</span><span class="p">;</span>
-        <span class="k">break</span><span class="p">;</span>
-      <span class="k">case</span> <span class="mi">4</span><span class="o">:</span>
-      <span class="k">case</span> <span class="mi">6</span><span class="o">:</span>
-      <span class="k">case</span> <span class="mi">9</span><span class="o">:</span>
-      <span class="k">case</span> <span class="mi">11</span><span class="o">:</span>
-        <span class="n">ans</span> <span class="o">+=</span><span class="mi">30</span><span class="p">;</span>
-      <span class="k">case</span> <span class="mi">2</span><span class="o">:</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">isleap</span><span class="p">(</span><span class="n">y</span><span class="p">)){</span>
-          <span class="n">ans</span> <span class="o">+=</span> <span class="mi">29</span><span class="p">;</span>
-        <span class="p">}</span><span class="k">else</span><span class="p">{</span>
-          <span class="n">ans</span> <span class="o">+=</span> <span class="mi">28</span><span class="p">;</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-  <span class="k">return</span> <span class="n">ans</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kt">int</span> <span class="nf">modk</span><span class="p">(</span><span class="kt">int</span> <span class="n">l</span><span class="p">,</span> <span class="kt">int</span> <span class="n">r</span><span class="p">,</span> <span class="kt">int</span> <span class="n">k</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="k">while</span> <span class="p">(</span><span class="n">l</span> <span class="o">&lt;=</span> <span class="n">r</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">l</span> <span class="o">%</span> <span class="n">k</span> <span class="o">!=</span><span class="mi">0</span><span class="p">)){</span>
-    <span class="o">++</span><span class="n">l</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">l</span> <span class="o">&lt;=</span> <span class="n">r</span><span class="p">){</span>
-    <span class="k">return</span> <span class="p">((</span><span class="n">r</span> <span class="o">-</span> <span class="n">l</span><span class="p">)</span><span class="o">/</span><span class="n">k</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
-  <span class="p">}</span><span class="k">else</span><span class="p">{</span>
-    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-<span class="p">{</span>
-  <span class="kt">int</span> <span class="n">t</span><span class="p">;</span>
-  <span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">t</span><span class="p">;</span>
-  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">t</span><span class="p">;</span><span class="o">++</span><span class="n">i</span><span class="p">){</span>
-    <span class="kt">int</span> <span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">m1</span><span class="p">,</span> <span class="n">m2</span><span class="p">,</span> <span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">;</span>
-    <span class="n">string</span> <span class="n">s</span><span class="p">;</span>
-    <span class="kt">char</span> <span class="n">c</span><span class="p">;</span>
-    <span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">s</span> <span class="o">&gt;&gt;</span> <span class="n">d1</span> <span class="o">&gt;&gt;</span><span class="n">c</span><span class="o">&gt;&gt;</span> <span class="n">y1</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="s">&quot;January&quot;</span><span class="p">)</span> <span class="n">m1</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="s">&quot;February&quot;</span><span class="p">)</span> <span class="n">m1</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="s">&quot;March&quot;</span><span class="p">)</span> <span class="n">m1</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="s">&quot;April&quot;</span><span class="p">)</span> <span class="n">m1</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="s">&quot;May&quot;</span><span class="p">)</span> <span class="n">m1</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="s">&quot;June&quot;</span><span class="p">)</span> <span class="n">m1</span> <span class="o">=</span> <span class="mi">6</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="s">&quot;July&quot;</span><span class="p">)</span> <span class="n">m1</span> <span class="o">=</span> <span class="mi">7</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="s">&quot;August&quot;</span><span class="p">)</span> <span class="n">m1</span> <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="s">&quot;September&quot;</span><span class="p">)</span> <span class="n">m1</span> <span class="o">=</span> <span class="mi">9</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="s">&quot;October&quot;</span><span class="p">)</span> <span class="n">m1</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="s">&quot;November&quot;</span><span class="p">)</span> <span class="n">m1</span> <span class="o">=</span> <span class="mi">11</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="s">&quot;December&quot;</span><span class="p">)</span> <span class="n">m1</span> <span class="o">=</span> <span class="mi">12</span><span class="p">;</span>
-    <span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">s</span> <span class="o">&gt;&gt;</span> <span class="n">d2</span> <span class="o">&gt;&gt;</span><span class="n">c</span><span class="o">&gt;&gt;</span> <span class="n">y2</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="s">&quot;January&quot;</span><span class="p">)</span> <span class="n">m2</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="s">&quot;February&quot;</span><span class="p">)</span> <span class="n">m2</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="s">&quot;March&quot;</span><span class="p">)</span> <span class="n">m2</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="s">&quot;April&quot;</span><span class="p">)</span> <span class="n">m2</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="s">&quot;May&quot;</span><span class="p">)</span> <span class="n">m2</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="s">&quot;June&quot;</span><span class="p">)</span> <span class="n">m2</span> <span class="o">=</span> <span class="mi">6</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="s">&quot;July&quot;</span><span class="p">)</span> <span class="n">m2</span> <span class="o">=</span> <span class="mi">7</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="s">&quot;August&quot;</span><span class="p">)</span> <span class="n">m2</span> <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="s">&quot;September&quot;</span><span class="p">)</span> <span class="n">m2</span> <span class="o">=</span> <span class="mi">9</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="s">&quot;October&quot;</span><span class="p">)</span> <span class="n">m2</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="s">&quot;November&quot;</span><span class="p">)</span> <span class="n">m2</span> <span class="o">=</span> <span class="mi">11</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="s">&quot;December&quot;</span><span class="p">)</span> <span class="n">m2</span> <span class="o">=</span> <span class="mi">12</span><span class="p">;</span>
-    <span class="kt">int</span> <span class="n">ans</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">y1</span> <span class="o">==</span> <span class="n">y2</span><span class="p">){</span>
-      <span class="k">if</span> <span class="p">(</span><span class="n">isleap</span><span class="p">(</span><span class="n">y1</span><span class="p">)</span><span class="o">&amp;&amp;</span><span class="n">dayofyear</span><span class="p">(</span><span class="n">y1</span><span class="p">,</span><span class="n">m1</span><span class="p">,</span><span class="n">d1</span><span class="p">)</span><span class="o">&lt;=</span><span class="n">goal</span><span class="o">&amp;&amp;</span><span class="n">dayofyear</span><span class="p">(</span><span class="n">y2</span><span class="p">,</span><span class="n">m2</span><span class="p">,</span><span class="n">d2</span><span class="p">)</span><span class="o">&gt;=</span><span class="n">goal</span><span class="p">){</span>
-        <span class="n">ans</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-      <span class="p">}</span><span class="k">else</span><span class="p">{</span>
-        <span class="n">ans</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-      <span class="p">}</span>
-    <span class="p">}</span><span class="k">else</span><span class="p">{</span>
-      <span class="k">if</span> <span class="p">(</span><span class="n">isleap</span><span class="p">(</span><span class="n">y1</span><span class="p">)</span><span class="o">&amp;&amp;</span><span class="n">dayofyear</span><span class="p">(</span><span class="n">y1</span><span class="p">,</span><span class="n">m1</span><span class="p">,</span><span class="n">d1</span><span class="p">)</span><span class="o">&lt;=</span><span class="n">goal</span><span class="p">)</span>
-        <span class="o">++</span><span class="n">ans</span><span class="p">;</span>
-      <span class="k">if</span> <span class="p">(</span><span class="n">isleap</span><span class="p">(</span><span class="n">y2</span><span class="p">)</span><span class="o">&amp;&amp;</span><span class="n">dayofyear</span><span class="p">(</span><span class="n">y2</span><span class="p">,</span><span class="n">m2</span><span class="p">,</span><span class="n">d2</span><span class="p">)</span><span class="o">&gt;=</span><span class="n">goal</span><span class="p">)</span>
-        <span class="o">++</span><span class="n">ans</span><span class="p">;</span>
-      <span class="n">ans</span> <span class="o">+=</span> <span class="n">modk</span><span class="p">(</span><span class="n">y1</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">y2</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span><span class="o">-</span><span class="n">modk</span><span class="p">(</span><span class="n">y1</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">y2</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span><span class="o">+</span><span class="n">modk</span><span class="p">(</span><span class="n">y1</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">y2</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">400</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="n">cout</span> <span class="o">&lt;&lt;</span><span class="s">&quot;Case #&quot;</span><span class="o">&lt;&lt;</span><span class="n">i</span><span class="o">&lt;&lt;</span><span class="s">&quot;: &quot;</span><span class="o">&lt;&lt;</span><span class="n">ans</span> <span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span></code></pre></div>
-
-<h1>题目2 : 回文字符序列</h1>
-
-<p>时间限制:2000ms
-单点时限:1000ms
-内存限制:256MB</p>
-
-<h2>描述</h2>
-
-<p>给定字符串，求它的回文子序列个数。回文子序列反转字符顺序后仍然与原序列相同。例如字符串aba中，回文子序列为&quot;a&quot;, &quot;a&quot;, &quot;aa&quot;, &quot;b&quot;, &quot;aba&quot;，共5个。内容相同位置不同的子序列算不同的子序列。</p>
-
-<h2>输入</h2>
-
-<p>第一行一个整数T，表示数据组数。之后是T组数据，每组数据为一行字符串。</p>
-
-<h2>输出</h2>
-
-<p>对于每组数据输出一行，格式为&quot;Case #X: Y&quot;，X代表数据编号（从1开始），Y为答案。答案对100007取模。</p>
-
-<h2>数据范围</h2>
-
-<p>1 ≤ T ≤ 30</p>
-
-<p>小数据</p>
-
-<p>字符串长度 ≤ 25</p>
-
-<p>大数据</p>
-
-<p>字符串长度 ≤ 1000</p>
-
-<h2>样例输入</h2>
-
-<pre>
-5
-aba
-abcbaddabcba
-12111112351121
-ccccccc
-fdadfa
-</pre>
-
-<h2>样例输出</h2>
-
-<pre>
-Case #1: 5
-Case #2: 277
-Case #3: 1333
-Case #4: 127
-Case #5: 17
-</pre>
-
-<h2>思路</h2>
-
-<p>此题使用区间动态规划，以区间长为阶段，设S[i..j]为i到j中的结果
-边界
-<pre>
-S[i..j] = 1 if i == j
-</pre>
-转移
-<pre>
-S[i..j] = | str[i] == str[j] = S[i+1..j] + S[i..j-1] + 1
-          | otherwise = S[i+1..j] + S[i..j-1] - S[i+1..j-1] (容斥原理)
-</pre></p>
-
-<h2>code</h2>
-
-<div class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="cp">#include &lt;iostream&gt;</span>
-<span class="cp">#include &lt;string&gt;</span>
-<span class="cp">#include &lt;algorithm&gt;</span>
-<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
-<span class="k">const</span> <span class="kt">int</span> <span class="n">mm</span> <span class="o">=</span> <span class="mi">100007</span><span class="p">;</span>
-<span class="kt">int</span> <span class="n">f</span><span class="p">[</span><span class="mi">2000</span><span class="p">][</span><span class="mi">2000</span><span class="p">];</span>
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-<span class="p">{</span>
-    <span class="kt">int</span> <span class="n">t</span><span class="p">;</span>
-    <span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">t</span><span class="p">;</span>
-    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">k</span> <span class="o">&lt;=</span> <span class="n">t</span><span class="p">;</span><span class="o">++</span><span class="n">k</span><span class="p">){</span>
-        <span class="n">string</span> <span class="n">a</span><span class="p">;</span>
-        <span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">a</span><span class="p">;</span>
-        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="o">++</span><span class="n">i</span><span class="p">){</span>
-            <span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-        <span class="p">}</span>
-        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">){</span>
-            <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">+</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="o">++</span><span class="n">j</span><span class="p">){</span>
-                <span class="n">f</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">j</span><span class="o">+</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="o">+</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">f</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">j</span><span class="o">+</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">%</span><span class="n">mm</span><span class="p">;</span>
-                <span class="k">if</span> <span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="n">i</span><span class="p">]){</span>
-                    <span class="o">++</span><span class="n">f</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">j</span><span class="o">+</span><span class="n">i</span><span class="p">];</span>
-                <span class="p">}</span><span class="k">else</span><span class="p">{</span>
-                    <span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">){</span>
-                        <span class="n">f</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">j</span><span class="o">+</span><span class="n">i</span><span class="p">]</span> <span class="o">-=</span> <span class="n">f</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="o">+</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>
-                    <span class="p">}</span>
-                <span class="p">}</span>
-                <span class="n">f</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">j</span><span class="o">+</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">j</span><span class="o">+</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="n">mm</span><span class="p">)</span><span class="o">%</span><span class="n">mm</span><span class="p">;</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Case #&quot;</span><span class="o">&lt;&lt;</span><span class="n">k</span><span class="o">&lt;&lt;</span><span class="s">&quot;: &quot;</span><span class="o">&lt;&lt;</span><span class="n">f</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">a</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span></code></pre></div>
-
-<h1>题目3 : 基站选址</h1>
-
-<p>时间限制:2000ms
-单点时限:1000ms
-内存限制:256MB</p>
-
-<h2>描述</h2>
-
-<p>需要在一个N × M的网格中建立一个通讯基站，通讯基站仅必须建立在格点上。
-网格中有A个用户，每个用户的通讯代价是用户到基站欧几里得距离的平方。
-网格中还有B个通讯公司，维护基站的代价是基站到最近的一个通讯公司的路程（路程定义为曼哈顿距离）。
-在网格中建立基站的总代价是用户通讯代价的总和加上维护基站的代价，最小总代价。</p>
-
-<h2>输入</h2>
-
-<p>第一行为一个整数T，表示数据组数。
-每组数据第一行为四个整数：N, M, A, B。
-接下来的A+B行每行两个整数x, y，代表一个坐标，前A行表示各用户的坐标，后B行表示各通讯公司的坐标。</p>
-
-<h2>输出</h2>
-
-<p>对于每组数据输出一行&quot;Case #X: Y&quot;，X代表数据编号（从1开始），Y代表所求最小代价。</p>
-
-<h2>数据范围</h2>
-
-<p>1 ≤ T ≤ 20
-1 ≤ x ≤ N
-1 ≤ y ≤ M
-1 ≤ B ≤ 100
-小数据
-1 ≤ N, M ≤ 100
-1 ≤ A ≤ 100
-大数据
-1 ≤ N, M ≤ 107
-1 ≤ A ≤ 1000</p>
-
-<h2>样例输入</h2>
-
-<pre>
-2
-3 3 4 1
-1 2
-2 1
-2 3
-3 2
-2 2
-4 4 4 2
-1 2
-2 4
-3 1
-4 3
-1 4
-1 3
-</pre>
-
-<h2>样例输出</h2>
-
-<pre>
-Case #1: 4
-Case #2: 13
-</pre>
-
-<h2>思路</h2>
-
-<p>看起来很可怕。实际上列出式子，(x,y)处代价 </p>
-
-<p>cost(x,y) = sigma((x - xi)^2 + (y - yi)^2) + abs(x - xb) + abs(y - yb)</p>
-
-<p>发现x,y是独立的，改写为cost(x,y) = f(x) + g(y). 分别最小化f(x), g(y)即可。
-（每个形式相同，均为初中水平的数学题）</p>
-
-<h2>code</h2>
-
-<div class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="cp">#include &lt;iostream&gt;</span>
-<span class="cp">#include &lt;algorithm&gt;</span>
-<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
-
-<span class="k">typedef</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">LL</span><span class="p">;</span>
-<span class="n">LL</span> <span class="nf">mincost</span><span class="p">(</span><span class="n">LL</span> <span class="n">a</span><span class="p">,</span> <span class="n">LL</span> <span class="n">b</span><span class="p">,</span> <span class="n">LL</span> <span class="n">c</span><span class="p">,</span> <span class="n">LL</span> <span class="n">l</span><span class="p">,</span> <span class="n">LL</span> <span class="n">r</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="kt">double</span> <span class="n">t</span> <span class="o">=</span><span class="kt">double</span><span class="p">(</span><span class="o">-</span><span class="n">b</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">a</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">t</span> <span class="o">&gt;</span> <span class="n">r</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">a</span><span class="o">*</span><span class="n">r</span><span class="o">*</span><span class="n">r</span> <span class="o">+</span> <span class="n">b</span><span class="o">*</span><span class="n">r</span> <span class="o">+</span><span class="n">c</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">t</span> <span class="o">&lt;</span> <span class="n">l</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">a</span><span class="o">*</span><span class="n">l</span><span class="o">*</span><span class="n">l</span> <span class="o">+</span> <span class="n">b</span><span class="o">*</span><span class="n">l</span> <span class="o">+</span><span class="n">c</span><span class="p">;</span>
-    <span class="n">LL</span> <span class="n">x</span> <span class="o">=</span> <span class="n">t</span><span class="p">;</span>
-    <span class="n">LL</span> <span class="n">y</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
-    <span class="n">LL</span> <span class="n">xx</span> <span class="o">=</span> <span class="n">a</span><span class="o">*</span><span class="n">x</span><span class="o">*</span><span class="n">x</span><span class="o">+</span><span class="n">b</span><span class="o">*</span><span class="n">x</span><span class="o">+</span><span class="n">c</span><span class="p">;</span>
-    <span class="n">LL</span> <span class="n">yy</span> <span class="o">=</span> <span class="n">a</span><span class="o">*</span><span class="n">y</span><span class="o">*</span><span class="n">y</span><span class="o">+</span><span class="n">b</span><span class="o">*</span><span class="n">y</span><span class="o">+</span><span class="n">c</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">x</span><span class="o">&lt;=</span><span class="n">r</span><span class="o">&amp;&amp;</span><span class="n">x</span><span class="o">&gt;=</span><span class="n">l</span><span class="o">&amp;&amp;</span><span class="n">y</span><span class="o">&lt;=</span><span class="n">r</span><span class="o">&amp;&amp;</span><span class="n">y</span><span class="o">&gt;=</span><span class="n">l</span><span class="p">){</span>
-        <span class="k">if</span><span class="p">(</span><span class="n">xx</span><span class="o">&lt;</span><span class="n">yy</span><span class="p">){</span>
-            <span class="k">return</span> <span class="n">xx</span><span class="p">;</span>
-        <span class="p">}</span><span class="k">else</span><span class="p">{</span>
-            <span class="k">return</span> <span class="n">yy</span><span class="p">;</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">x</span><span class="o">&lt;=</span><span class="n">r</span><span class="o">&amp;&amp;</span><span class="n">x</span><span class="o">&gt;=</span><span class="n">l</span><span class="p">){</span>
-        <span class="k">return</span> <span class="n">xx</span><span class="p">;</span>
-    <span class="p">}</span><span class="k">else</span><span class="p">{</span>
-        <span class="k">return</span> <span class="n">yy</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="n">a</span><span class="o">*</span><span class="n">r</span><span class="o">*</span><span class="n">r</span><span class="o">+</span><span class="n">b</span><span class="o">*</span><span class="n">r</span><span class="o">+</span><span class="n">c</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-<span class="p">{</span>
-    <span class="kt">int</span> <span class="n">t</span><span class="p">;</span>
-    <span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">t</span><span class="p">;</span>
-    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">k</span> <span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">k</span><span class="o">&lt;=</span><span class="n">t</span><span class="p">;</span><span class="o">++</span><span class="n">k</span><span class="p">){</span>
-        <span class="kt">int</span> <span class="n">n</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">;</span>
-        <span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">n</span><span class="o">&gt;&gt;</span><span class="n">m</span><span class="o">&gt;&gt;</span><span class="n">a</span><span class="o">&gt;&gt;</span><span class="n">b</span><span class="p">;</span>
-        <span class="n">LL</span> <span class="n">res</span> <span class="o">=</span> <span class="mh">0xFFFFFFFFFFFFFFFLL</span><span class="p">;</span>
-        <span class="n">LL</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">;</span>
-        <span class="n">LL</span> <span class="n">sx</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-        <span class="n">LL</span> <span class="n">xx</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-        <span class="n">LL</span> <span class="n">sy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-        <span class="n">LL</span> <span class="n">yy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">;</span><span class="o">++</span><span class="n">i</span><span class="p">){</span>
-            <span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">x</span><span class="o">&gt;&gt;</span><span class="n">y</span><span class="p">;</span>
-            <span class="n">sx</span> <span class="o">-=</span> <span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">;</span>
-            <span class="n">sy</span> <span class="o">-=</span> <span class="mi">2</span><span class="o">*</span><span class="n">y</span><span class="p">;</span>
-            <span class="n">xx</span> <span class="o">+=</span> <span class="n">x</span><span class="o">*</span><span class="n">x</span><span class="p">;</span>
-            <span class="n">yy</span> <span class="o">+=</span> <span class="n">y</span><span class="o">*</span><span class="n">y</span><span class="p">;</span>
-        <span class="p">}</span>
-        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">b</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">){</span>
-            <span class="n">cin</span> <span class="o">&gt;&gt;</span><span class="n">x</span> <span class="o">&gt;&gt;</span><span class="n">y</span><span class="p">;</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="n">min</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">min</span><span class="p">(</span><span class="n">mincost</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">sx</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">xx</span><span class="o">-</span><span class="n">x</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">n</span><span class="p">),</span><span class="n">mincost</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">sx</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">xx</span><span class="o">+</span><span class="n">x</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">x</span><span class="p">))</span><span class="o">+</span>
-                    <span class="n">min</span><span class="p">(</span><span class="n">mincost</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">sy</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">yy</span><span class="o">-</span><span class="n">y</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">m</span><span class="p">),</span><span class="n">mincost</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">sy</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">yy</span><span class="o">+</span><span class="n">y</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">y</span><span class="p">)));</span>
-        <span class="p">}</span>
-        <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;Case #&quot;</span><span class="o">&lt;&lt;</span><span class="n">k</span><span class="o">&lt;&lt;</span><span class="s">&quot;: &quot;</span><span class="o">&lt;&lt;</span><span class="n">res</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span></code></pre></div>
-
+    
+    </div>
   </div>
   
   <div class="post">
@@ -542,8 +152,9 @@ Case #2: 13
     </h1>
 
     <span class="post-date">17 Feb 2015</span>
-
-    <p>在搞 IO 时，曾听大神介绍主席树/函数式线段树/可持久化线段树，当时对要修改时另外开点不是很习惯，不过现在已经很自然了。</p>
+    <div class="post-content-truncate">
+    
+      <p>在搞 IO 时，曾听大神介绍主席树/函数式线段树/可持久化线段树，当时对要修改时另外开点不是很习惯，不过现在已经很自然了。</p>
 
 <div class="highlight"><pre><code class="language-racket" data-lang="racket"><span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="n">make-tree</span> <span class="n">entry</span> <span class="n">lchild</span> <span class="n">rchild</span><span class="p">)</span>
   <span class="p">(</span><span class="nb">list</span> <span class="n">entry</span> <span class="n">lchild</span> <span class="n">rchild</span><span class="p">))</span>
@@ -588,6 +199,8 @@ Case #2: 13
                   <span class="p">(</span><span class="nb">cons</span> <span class="p">(</span><span class="n">make-tree</span> <span class="k">this</span> <span class="n">lc</span> <span class="n">rc</span><span class="p">)</span> <span class="n">left</span><span class="p">))))))))</span>
   <span class="p">(</span><span class="nb">car</span> <span class="p">(</span><span class="n">part-build</span> <span class="p">(</span><span class="nb">length</span> <span class="nb">list</span><span class="p">)</span> <span class="nb">list</span><span class="p">)))</span></code></pre></div>
 
+    
+    </div>
   </div>
   
   <div class="post">
@@ -598,8 +211,9 @@ Case #2: 13
     </h1>
 
     <span class="post-date">08 Feb 2015</span>
-
-    <p>读完《The little schemer》后，为了加深对最后一章的理解，用Ruby试着实现了最后一章的<a href="https://github.com/codeworm96/risp">解释器</a>。</p>
+    <div class="post-content-truncate">
+    
+      <p>读完《The little schemer》后，为了加深对最后一章的理解，用Ruby试着实现了最后一章的<a href="https://github.com/codeworm96/risp">解释器</a>。</p>
 
 <h1>Plan</h1>
 
@@ -658,6 +272,8 @@ define 会在环境中加入 length 的定义，length 便可正常调用了。<
 <li>continuation</li>
 </ul>
 
+    
+    </div>
   </div>
   
   <div class="post">
@@ -668,11 +284,14 @@ define 会在环境中加入 length 的定义，length 便可正常调用了。<
     </h1>
 
     <span class="post-date">07 Feb 2015</span>
-
-    <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="mi">1024</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span>
+    <div class="post-content-truncate">
+    
+      <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="mi">1024</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span>
   <span class="nb">puts</span> <span class="s2">&quot;hello, world!&quot;</span>
 <span class="k">end</span></code></pre></div>
 
+    
+    </div>
   </div>
   
 </div>
