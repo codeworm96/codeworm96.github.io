@@ -4,13 +4,28 @@
  <title>codeworm96</title>
  <link href="http://codeworm96.github.io//atom.xml" rel="self"/>
  <link href="http://codeworm96.github.io//"/>
- <updated>2015-05-04T14:31:24+08:00</updated>
+ <updated>2015-05-04T14:44:07+08:00</updated>
  <id>http://codeworm96.github.io/</id>
  <author>
    <name>codeworm96</name>
    <email>codeworm96@outlook.com</email>
  </author>
 
+ 
+ <entry>
+   <title>blog 的一些小改动</title>
+   <link href="http://codeworm96.github.io//2015/05/04/enable-duoshuo/"/>
+   <updated>2015-05-04T00:00:00+08:00</updated>
+   <id>http://codeworm96.github.io//2015/05/04/enable-duoshuo</id>
+   <content type="html">&lt;p&gt;给 blog 装了评论系统，本来是在 Disqus 和多说间纠结。参考了&lt;a href=&quot;http://gaocegege.com/&quot;&gt;gaocegege&lt;/a&gt; 和 &lt;a href=&quot;http://bobma.me/&quot;&gt;马腿&lt;/a&gt;,就装了多说。&lt;/p&gt;
+
+&lt;p&gt;同时，把主页模板改了一下，现在可以指定首页只显示文章的一部分。&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;p&gt;像这样。&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>编程之美2015初赛第一轮</title>
