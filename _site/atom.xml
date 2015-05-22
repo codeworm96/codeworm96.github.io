@@ -4,13 +4,72 @@
  <title>codeworm96</title>
  <link href="http://codeworm96.github.io//atom.xml" rel="self"/>
  <link href="http://codeworm96.github.io//"/>
- <updated>2015-05-05T23:01:43+08:00</updated>
+ <updated>2015-05-22T23:38:28+08:00</updated>
  <id>http://codeworm96.github.io/</id>
  <author>
    <name>codeworm96</name>
    <email>codeworm96@outlook.com</email>
  </author>
 
+ 
+ <entry>
+   <title>对红黑树的一种解释</title>
+   <link href="http://codeworm96.github.io//2015/05/22/RedBlackTree/"/>
+   <updated>2015-05-22T00:00:00+08:00</updated>
+   <id>http://codeworm96.github.io//2015/05/22/RedBlackTree</id>
+   <content type="html">&lt;blockquote&gt;
+&lt;p&gt;mjc同学，说说你的看法。 --Prof. qzw&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;红黑树的case非常之多，令我们这样的沙茶不能理解。或许只有mjc这样的大神才能理解吧。
+虽然经过验证，其中的各种操作都能保证不变式始终成立，但总是感觉其中有着更深层的奥秘。&lt;/p&gt;
+
+&lt;p&gt;或许，要真正理解一个概念必须逆流而上，寻找其提出者当时的想法。今日阅读红黑树发明者之一 Robert Sedgewick 的 slide，受益匪浅，
+结合自己的愚见，稍作记录。&lt;/p&gt;
+
+&lt;h1&gt;prerequisite&lt;/h1&gt;
+
+&lt;p&gt;you should familiar with rotation&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;h1&gt;2-3-4树&lt;/h1&gt;
+
+&lt;p&gt;2-3-4树可谓红黑树的前身，理解了它有助理解红黑树，其中有三类节点 2-node, 3-node &amp;amp; 4-node,他的条件是到所有叶节点的路径长度均相同。
+&lt;img src=&quot;/public/upload/rbt/234nodes.jpg&quot; alt=&quot;节点类型&quot;&gt;
+&lt;img src=&quot;/public/upload/rbt/234.png&quot; alt=&quot;2-3-4树&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;2-3-4树的插入很简单，若最后在2/3-node下只要把它并入那个节点，若是4-node，就把中间那个提到上一层，下面分裂为两个（Note：可能又会引起上一层的问题）
+由上述思路即得 Button-up 算法。
+&lt;img src=&quot;/public/upload/rbt/insert.png&quot; alt=&quot;insert&quot;&gt;
+我们发现4-node不利插入，于是可在向下查找时，遇到4-node便分裂（note： 因上一层由归纳假设无4-node,故无需递归），这就是 top-down 方法了。&lt;/p&gt;
+
+&lt;h1&gt;从2-3-4树到红黑树&lt;/h1&gt;
+
+&lt;p&gt;2-3-4树虽易于理解，可惜节点种类多实现不便，是否可用二叉树来表示？
+&lt;img src=&quot;/public/upload/rbt/nodes.png&quot; alt=&quot;对应红黑树表示&quot;&gt;
+红色表示属于父节点表示的node
+这样一搞，发现与红黑树性质等同（黑高度==对应2-3-4树高度）&lt;/p&gt;
+
+&lt;h1&gt;Button-up insert&lt;/h1&gt;
+
+&lt;p&gt;那么对应的： 新节点默认红色 &amp;lt;-&amp;gt; 并入上层节点&lt;/p&gt;
+
+&lt;p&gt;分裂节点：&lt;img src=&quot;/public/upload/rbt/split.png&quot; alt=&quot;分裂节点&quot;&gt;
+(note:遇有些情况要化为标准型）
+&lt;img src=&quot;/public/upload/rbt/standardize.png&quot; alt=&quot;标准化&quot;&gt;&lt;/p&gt;
+
+&lt;h1&gt;Top-down insert&lt;/h1&gt;
+
+&lt;p&gt;每次遇到两孩子均为红色（4-node）就分裂（可能要修正形式）
+每次遇到一孩子为红色（3-node)(qzw:走到红色怎么办呢？）,其实什么都不用做，最后修正形式即可。
+孩子双黑（2-node），无需操作。&lt;/p&gt;
+
+&lt;p&gt;恭喜你已经掌握了红黑树插入的的全部技术。&lt;/p&gt;
+
+&lt;p&gt;Happy Hacking!&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>再次折腾解释器</title>

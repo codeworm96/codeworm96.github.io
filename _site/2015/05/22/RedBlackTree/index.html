@@ -11,7 +11,7 @@
 
   <title>
     
-      编程之美2015初赛第一轮 &middot; codeworm96
+      对红黑树的一种解释 &middot; codeworm96
     
   </title>
 
@@ -102,32 +102,65 @@
 
       <div class="container content">
         <div class="post">
-  <h1 class="post-title">编程之美2015初赛第一轮</h1>
-  <span class="post-date">25 Apr 2015</span>
-  <p>这一场简直崩了。一开始看题发现第三题还比较可做，题中的关系反自反，非对称，非传递性质并不好，来了一下对称闭包，观察到关系图中并没有环，结果想到了二分图，并没有做出。
-后来发现对称闭包的补关系是相容关系，性质较好，可将题目化为求最大相容类中元素最多的一个有多少元素，然后写了个O(n^3)的解，过了小数据。
-（后来了解到最大独立集的概念，正确的展开是有关系图无环-&gt;这是<del>树</del>森林(可能不联通)-&gt;树形dp求最大独立集)</p>
+  <h1 class="post-title">对红黑树的一种解释</h1>
+  <span class="post-date">22 May 2015</span>
+  <blockquote>
+<p>mjc同学，说说你的看法。 --Prof. qzw</p>
+</blockquote>
 
-<p>之后的时间写第一题小数据，思想是根据改颜色点相邻点的信息更新个数，应该是可过的，但T了，赛后看其他人代码，思路是对的，但常数写挂了。（看来ICS要好好学了）</p>
+<p>红黑树的case非常之多，令我们这样的沙茶不能理解。或许只有mjc这样的大神才能理解吧。
+虽然经过验证，其中的各种操作都能保证不变式始终成立，但总是感觉其中有着更深层的奥秘。</p>
 
-<p>第二题暂无想法。</p>
+<p>或许，要真正理解一个概念必须逆流而上，寻找其提出者当时的想法。今日阅读红黑树发明者之一 Robert Sedgewick 的 slide，受益匪浅，
+结合自己的愚见，稍作记录。</p>
 
-<p>（还好没有爆零）</p>
+<h1>prerequisite</h1>
+
+<p>you should familiar with rotation</p>
+
+<!-- more -->
+
+<h1>2-3-4树</h1>
+
+<p>2-3-4树可谓红黑树的前身，理解了它有助理解红黑树，其中有三类节点 2-node, 3-node &amp; 4-node,他的条件是到所有叶节点的路径长度均相同。
+<img src="/public/upload/rbt/234nodes.jpg" alt="节点类型">
+<img src="/public/upload/rbt/234.png" alt="2-3-4树"></p>
+
+<p>2-3-4树的插入很简单，若最后在2/3-node下只要把它并入那个节点，若是4-node，就把中间那个提到上一层，下面分裂为两个（Note：可能又会引起上一层的问题）
+由上述思路即得 Button-up 算法。
+<img src="/public/upload/rbt/insert.png" alt="insert">
+我们发现4-node不利插入，于是可在向下查找时，遇到4-node便分裂（note： 因上一层由归纳假设无4-node,故无需递归），这就是 top-down 方法了。</p>
+
+<h1>从2-3-4树到红黑树</h1>
+
+<p>2-3-4树虽易于理解，可惜节点种类多实现不便，是否可用二叉树来表示？
+<img src="/public/upload/rbt/nodes.png" alt="对应红黑树表示">
+红色表示属于父节点表示的node
+这样一搞，发现与红黑树性质等同（黑高度==对应2-3-4树高度）</p>
+
+<h1>Button-up insert</h1>
+
+<p>那么对应的： 新节点默认红色 &lt;-&gt; 并入上层节点</p>
+
+<p>分裂节点：<img src="/public/upload/rbt/split.png" alt="分裂节点">
+(note:遇有些情况要化为标准型）
+<img src="/public/upload/rbt/standardize.png" alt="标准化"></p>
+
+<h1>Top-down insert</h1>
+
+<p>每次遇到两孩子均为红色（4-node）就分裂（可能要修正形式）
+每次遇到一孩子为红色（3-node)(qzw:走到红色怎么办呢？）,其实什么都不用做，最后修正形式即可。
+孩子双黑（2-node），无需操作。</p>
+
+<p>恭喜你已经掌握了红黑树插入的的全部技术。</p>
+
+<p>Happy Hacking!</p>
 
 </div>
 
 <div class="related">
   <h2>Related Posts</h2>
   <ul class="related-posts">
-    
-      <li>
-        <h3>
-          <a href="/2015/05/22/RedBlackTree/">
-            对红黑树的一种解释
-            <small>22 May 2015</small>
-          </a>
-        </h3>
-      </li>
     
       <li>
         <h3>
@@ -147,10 +180,19 @@
         </h3>
       </li>
     
+      <li>
+        <h3>
+          <a href="/2015/04/25/bop2015round1/">
+            编程之美2015初赛第一轮
+            <small>25 Apr 2015</small>
+          </a>
+        </h3>
+      </li>
+    
   </ul>
 </div>
 <!-- 多说评论框 start -->
-<div class="ds-thread" data-thread-key="/2015/04/25/bop2015round1" data-title="编程之美2015初赛第一轮" data-url="http://codeworm96.github.io//2015/04/25/bop2015round1/"></div>
+<div class="ds-thread" data-thread-key="/2015/05/22/RedBlackTree" data-title="对红黑树的一种解释" data-url="http://codeworm96.github.io//2015/05/22/RedBlackTree/"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
