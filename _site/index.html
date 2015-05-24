@@ -113,49 +113,8 @@
     <span class="post-date">24 May 2015</span>
     <div class="post-content-truncate">
     
-      <h1>2-3-4树的删除（top-down）</h1>
+      <p>(接上篇）</p>
 
-<p>为了理解红黑树删除，我们还是先回到2-3-4树。</p>
-
-<p>(Note: 跟所有搜索树一样，我们总可以把删除化为删一个子树不满的节点）</p>
-
-<p>我们发现对2-3-4树，删3-node，4-node都比较轻松愉快，而删2-node很麻烦。
-所以在top-down的过程中我们要尽量排除2-node.
-可分两种情况：</p>
-
-<ol>
-<li><p>若相邻兄弟节点也为2-node，可以从父节点拉下来一个进行合并。</p></li>
-<li><p>若相邻兄弟节点不为2-node，可经由父节点借来一个。</p></li>
-</ol>
-
-<p><img src="/public/upload/rbt/234delete.png" alt="234删除"></p>
-
-<h1>红黑树删除（top-down）</h1>
-
-<p>我们可以把上述方法迁移到红黑树。在2-3-4树中我们的不变式是当前节点不是2-node，而在红黑树中则为：</p>
-
-<ol>
-<li><p>当前节点cur 为红色</p></li>
-<li><p>cur.left/cur.right 至少有一为红色</p></li>
-</ol>
-
-<p>方法：</p>
-
-<ol>
-<li><p>若父节点为黑色可通过旋转化为父节点为红色情况
-<img src="/public/upload/rbt/trans.png" alt="转化"></p></li>
-<li><p>若兄弟节点为2-node 则可合并
-<img src="/public/upload/rbt/merge.png" alt="合并"></p></li>
-<li><p>若兄弟节点不为2-node 则通过父节点借
-<img src="/public/upload/rbt/borrow.png" alt="借"></p></li>
-</ol>
-
-<p>当然开始时也要能满足不变式，若不满足，则可直接把父节点变红，最后要把父节点恢复黑色。
-<img src="/public/upload/rbt/root.png" alt="根的情况"></p>
-
-<p>这就是红黑树的 top-down 删除的方法。</p>
-
-<p>Happy Hacking!</p>
 
     
     </div>

@@ -4,7 +4,7 @@
  <title>codeworm96</title>
  <link href="http://codeworm96.github.io//atom.xml" rel="self"/>
  <link href="http://codeworm96.github.io//"/>
- <updated>2015-05-24T23:17:01+08:00</updated>
+ <updated>2015-05-24T23:19:31+08:00</updated>
  <id>http://codeworm96.github.io/</id>
  <author>
    <name>codeworm96</name>
@@ -17,7 +17,11 @@
    <link href="http://codeworm96.github.io//2015/05/24/RedBlackTree2/"/>
    <updated>2015-05-24T00:00:00+08:00</updated>
    <id>http://codeworm96.github.io//2015/05/24/RedBlackTree2</id>
-   <content type="html">&lt;h1&gt;2-3-4树的删除（top-down）&lt;/h1&gt;
+   <content type="html">&lt;p&gt;(接上篇）&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;h1&gt;2-3-4树的删除（top-down）&lt;/h1&gt;
 
 &lt;p&gt;为了理解红黑树删除，我们还是先回到2-3-4树。&lt;/p&gt;
 
