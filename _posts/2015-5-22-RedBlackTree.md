@@ -38,15 +38,18 @@ you should familiar with rotation
 分裂节点：![分裂节点](/public/upload/rbt/split.png)
 (note:遇有些情况要化为标准型）
 ![标准化](/public/upload/rbt/standardize.png)
+\[Update:2015/5/31
+上面这些转化操作都可以使用3+4重构和统一重染色完成，see also <a href="http://user.qzone.qq.com/3101371795/blog/1432878594" target="_blank">樊腿巨作 基于3+4统一重构和统一重染色操作的红黑树归约实现</a>
+\]
 
 # Top-down insert
 每次遇到两孩子均为红色（4-node）就分裂（可能要修正形式）
 
 每次遇到一孩子为红色（3-node)(qzw:走到红色怎么办呢？）,其实什么都不用做，最后修正形式即可。
 
-[Update:2015/5/24
+\[Update:2015/5/24
 如果有人有强迫症，认为必须走黑色，而且明明可以通过旋转变成黑色！
-请看下面情况，程序会在两种状态间不停转换：![bug!](/public/upload/rbt/bug.png)]
+请看下面情况，程序会在两种状态间不停转换：![bug!](/public/upload/rbt/bug.png)\]
 
 孩子双黑（2-node），无需操作。
 

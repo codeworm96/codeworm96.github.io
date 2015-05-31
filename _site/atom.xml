@@ -4,7 +4,7 @@
  <title>codeworm96</title>
  <link href="http://codeworm96.github.io//atom.xml" rel="self"/>
  <link href="http://codeworm96.github.io//"/>
- <updated>2015-05-24T23:19:31+08:00</updated>
+ <updated>2015-05-31T23:08:24+08:00</updated>
  <id>http://codeworm96.github.io/</id>
  <author>
    <name>codeworm96</name>
@@ -112,7 +112,10 @@
 
 &lt;p&gt;分裂节点：&lt;img src=&quot;/public/upload/rbt/split.png&quot; alt=&quot;分裂节点&quot;&gt;
 (note:遇有些情况要化为标准型）
-&lt;img src=&quot;/public/upload/rbt/standardize.png&quot; alt=&quot;标准化&quot;&gt;&lt;/p&gt;
+&lt;img src=&quot;/public/upload/rbt/standardize.png&quot; alt=&quot;标准化&quot;&gt;
+[Update:2015/5/31
+上面这些转化操作都可以使用3+4重构和统一重染色完成，see also &lt;a href=&quot;http://user.qzone.qq.com/3101371795/blog/1432878594&quot; target=&quot;_blank&quot;&gt;樊腿巨作 基于3+4统一重构和统一重染色操作的红黑树归约实现&lt;/a&gt;
+]&lt;/p&gt;
 
 &lt;h1&gt;Top-down insert&lt;/h1&gt;
 
