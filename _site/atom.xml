@@ -4,7 +4,7 @@
  <title>codeworm96</title>
  <link href="http://codeworm96.github.io//atom.xml" rel="self"/>
  <link href="http://codeworm96.github.io//"/>
- <updated>2015-05-31T23:08:24+08:00</updated>
+ <updated>2015-05-31T23:14:03+08:00</updated>
  <id>http://codeworm96.github.io/</id>
  <author>
    <name>codeworm96</name>
@@ -62,6 +62,11 @@
 &lt;img src=&quot;/public/upload/rbt/root.png&quot; alt=&quot;根的情况&quot;&gt;&lt;/p&gt;
 
 &lt;p&gt;这就是红黑树的 top-down 删除的方法。&lt;/p&gt;
+
+&lt;p&gt;[Update:2015/5/31
+删除樊腿同样也给出了解决方案，不过较之插入，稍显混乱，考虑到本文以红黑树理解为主线，
+在此不做展开，有兴趣的读者可以参考 &lt;a href=&quot;http://user.qzone.qq.com/3101371795/blog/1432878594&quot; target=&quot;_blank&quot;&gt;樊腿巨作 基于3+4统一重构和统一重染色操作的红黑树归约实现&lt;/a&gt;
+]&lt;/p&gt;
 
 &lt;p&gt;Happy Hacking!&lt;/p&gt;
 </content>
