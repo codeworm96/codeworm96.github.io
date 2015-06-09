@@ -11,7 +11,7 @@
 
   <title>
     
-      blog 的一些小改动 &middot; codeworm96
+      一些乱搞的产物 &middot; codeworm96
     
   </title>
 
@@ -102,30 +102,34 @@
 
       <div class="container content">
         <div class="post">
-  <h1 class="post-title">blog 的一些小改动</h1>
-  <span class="post-date">04 May 2015</span>
-  <p>给 blog 装了评论系统，本来是在 Disqus 和多说间纠结。参考了<a href="http://gaocegege.com/">gaocegege</a> 和 <a href="http://bobma.me/">马腿</a>,就装了多说。</p>
-
-<p>同时，把主页模板改了一下，现在可以指定首页只显示文章的一部分。</p>
+  <h1 class="post-title">一些乱搞的产物</h1>
+  <span class="post-date">09 Jun 2015</span>
+  <p>昨天，看了一些资料，感觉自己对 continuation 有了一些想法，感觉可以给之前的解释器加上，
+于是迫不及待的行动了起来。</p>
 
 <!-- more -->
 
-<p>像这样。</p>
+<p>本来，程序的求值状态可以由(Expr, Env) 即正在求值的表达式和求值环境刻画，但这对 continuation 实现是不够的，
+还要加上 continuation 一项，变为(Expr, Env, Kont).
+continuation 以我现在的认识是表示之后要进行的计算。</p>
+
+<p>以此思路，给求值用的函数，都加上 Kont 一个参数，然后都改写成 continuation passing style, 就改好了。
+顺便可以实现 callcc.</p>
+
+<p>然后突然发现，test 中 ackman function 有部分过不去了，因为实现时对参数求值的改动使得递归调用增多，stack overflow.
+于是，只好实现了尾递归优化，即用循环把 eval 的主体包起来，有的情况直接更新状态即可，省去递归调用。</p>
+
+<p>这样就把之前的坑稍稍填了一点。</p>
+
+<p>在这个过程中，感觉写程序需要有东西提供对程序正确性的信心，比如测试和 type system 等。</p>
+
+<p>感觉自己还是太不务正业了，期末还是要抓紧复习啊。</p>
 
 </div>
 
 <div class="related">
   <h2>Related Posts</h2>
   <ul class="related-posts">
-    
-      <li>
-        <h3>
-          <a href="/2015/06/09/continuation/">
-            一些乱搞的产物
-            <small>09 Jun 2015</small>
-          </a>
-        </h3>
-      </li>
     
       <li>
         <h3>
@@ -145,10 +149,19 @@
         </h3>
       </li>
     
+      <li>
+        <h3>
+          <a href="/2015/05/05/risp2/">
+            再次折腾解释器
+            <small>05 May 2015</small>
+          </a>
+        </h3>
+      </li>
+    
   </ul>
 </div>
 <!-- 多说评论框 start -->
-<div class="ds-thread" data-thread-key="/2015/05/04/enable-duoshuo" data-title="blog 的一些小改动" data-url="http://codeworm96.github.io//2015/05/04/enable-duoshuo/"></div>
+<div class="ds-thread" data-thread-key="/2015/06/09/continuation" data-title="一些乱搞的产物" data-url="http://codeworm96.github.io//2015/06/09/continuation/"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
