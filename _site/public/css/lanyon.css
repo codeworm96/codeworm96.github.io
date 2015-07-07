@@ -346,6 +346,11 @@ a.sidebar-nav-item:focus {
   color: inherit;
 }
 
+/* indent for Chinese paragraph */
+.post p {
+  text-indent: 2em;
+}
+
 
 /*
  * Pagination
