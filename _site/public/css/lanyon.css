@@ -351,6 +351,10 @@ a.sidebar-nav-item:focus {
   text-indent: 2em;
 }
 
+.post p * {
+  text-indent: 0; /* close it */
+}
+
 
 /*
  * Pagination
