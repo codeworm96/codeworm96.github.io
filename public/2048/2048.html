@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>2048</title>
+    <style type="text/css">
+      .cell text {
+        font-size: 40px;
+      }
+    </style>
+  </head>
+  <body>
+    <svg class="game-container"></svg>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+    <script src="js/game.js"></script>
+    <script type="text/javascript">
+      document.body.addEventListener('keyup', function(event) {
+        switch(event.keyCode) {
+          case 37:
+            step('left');
+            break;
+          case 38:
+            step('up');
+            break;
+          case 39:
+            step('right');
+            break;
+          case 40:
+            step('down');
+            break;
+        }
+      }, false);
+      init();
+    </script>
+    <p>press arrow key to play!</p>
+  </body>
+</html>
