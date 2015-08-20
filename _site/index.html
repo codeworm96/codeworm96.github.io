@@ -69,6 +69,10 @@
         
       
     
+      
+        
+      
+    
 
     <a class="sidebar-nav-item" href="https://github.com/codeworm96">GitHub</a>
     <span class="sidebar-nav-item">Currently v1.0.0</span>
@@ -102,6 +106,39 @@
 
       <div class="container content">
         <div class="posts">
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/2015/08/20/cpp-type-pitfall/">
+        c++趣题一道
+      </a>
+    </h1>
+
+    <span class="post-date">20 Aug 2015</span>
+    <div class="post-content-truncate">
+    
+      <p>根据下面的声明回答有关问题。</p>
+
+<div class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span> <span class="k">class</span> <span class="nc">Optional</span> <span class="p">{</span>
+    <span class="k">public</span><span class="o">:</span>
+        <span class="c1">//invalid</span>
+        <span class="n">Optional</span><span class="p">()</span><span class="o">:</span><span class="n">valid</span><span class="p">(</span><span class="nb">false</span><span class="p">)</span> <span class="p">{}</span>
+
+        <span class="c1">//valid value</span>
+        <span class="n">Optional</span><span class="p">(</span><span class="k">const</span> <span class="n">T</span> <span class="o">&amp;</span> <span class="n">value</span><span class="p">)</span><span class="o">:</span><span class="n">valid</span><span class="p">(</span><span class="nb">true</span><span class="p">),</span> <span class="n">content</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="p">{}</span>
+
+        <span class="k">operator</span> <span class="kt">bool</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">valid</span><span class="p">;</span> <span class="p">}</span>
+
+        <span class="k">const</span> <span class="n">T</span> <span class="o">&amp;</span> <span class="k">operator</span><span class="o">*</span><span class="p">();</span>
+<span class="p">};</span>
+
+<span class="n">Optional</span><span class="o">&lt;</span><span class="n">Value</span><span class="o">&gt;</span> <span class="n">get</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span> <span class="n">key</span><span class="p">);</span>
+
+<span class="kt">int</span> <span class="n">t</span> <span class="o">=</span> <span class="n">db</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">input</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">c_str</span><span class="p">());</span> <span class="c1">//为何可以通过编译？</span></code></pre></div>
+
+    
+    </div>
+  </div>
   
   <div class="post">
     <h1 class="post-title">
@@ -179,25 +216,6 @@
     
       <p>搞 lab 之余又把之前的解释器搞了一搞。之前学习了 Monad 这个抽象，也了解了其在
 Parser 中的运用，为了加深理解，就在 ruby 里把这套抽象搞了出来，把原来的 Parser 换掉。同时又加了点测试。下面记一下经验教训。</p>
-
-
-    
-    </div>
-  </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/2015/05/04/enable-duoshuo/">
-        blog 的一些小改动
-      </a>
-    </h1>
-
-    <span class="post-date">04 May 2015</span>
-    <div class="post-content-truncate">
-    
-      <p>给 blog 装了评论系统，本来是在 Disqus 和多说间纠结。参考了<a href="http://gaocegege.com/">gaocegege</a> 和 <a href="http://bobma.me/">马腿</a>,就装了多说。</p>
-
-<p>同时，把主页模板改了一下，现在可以指定首页只显示文章的一部分。</p>
 
 
     

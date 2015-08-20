@@ -11,7 +11,7 @@
 
   <title>
     
-      对红黑树的一种解释 &middot; codeworm96
+      c++趣题一道 &middot; codeworm96
     
   </title>
 
@@ -106,83 +106,32 @@
 
       <div class="container content">
         <div class="post">
-  <h1 class="post-title">对红黑树的一种解释</h1>
-  <span class="post-date">22 May 2015</span>
-  <blockquote>
-<p>mjc同学，说说你的看法。 --Prof. qzw</p>
-</blockquote>
+  <h1 class="post-title">c++趣题一道</h1>
+  <span class="post-date">20 Aug 2015</span>
+  <p>根据下面的声明回答有关问题。</p>
 
-<p>红黑树的case非常之多，令我们这样的沙茶不能理解。或许只有mjc这样的大神才能理解吧。
-虽然经过验证，其中的各种操作都能保证不变式始终成立，但总是感觉其中有着更深层的奥秘。</p>
+<div class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span> <span class="k">class</span> <span class="nc">Optional</span> <span class="p">{</span>
+    <span class="k">public</span><span class="o">:</span>
+        <span class="c1">//invalid</span>
+        <span class="n">Optional</span><span class="p">()</span><span class="o">:</span><span class="n">valid</span><span class="p">(</span><span class="nb">false</span><span class="p">)</span> <span class="p">{}</span>
 
-<p>或许，要真正理解一个概念必须逆流而上，寻找其提出者当时的想法。今日阅读红黑树发明者之一 Robert Sedgewick 的 slide，受益匪浅，
-结合自己的愚见，稍作记录。</p>
+        <span class="c1">//valid value</span>
+        <span class="n">Optional</span><span class="p">(</span><span class="k">const</span> <span class="n">T</span> <span class="o">&amp;</span> <span class="n">value</span><span class="p">)</span><span class="o">:</span><span class="n">valid</span><span class="p">(</span><span class="nb">true</span><span class="p">),</span> <span class="n">content</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="p">{}</span>
 
-<h1>prerequisite</h1>
+        <span class="k">operator</span> <span class="kt">bool</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">valid</span><span class="p">;</span> <span class="p">}</span>
 
-<p>you should familiar with rotation</p>
+        <span class="k">const</span> <span class="n">T</span> <span class="o">&amp;</span> <span class="k">operator</span><span class="o">*</span><span class="p">();</span>
+<span class="p">};</span>
 
-<!-- more -->
+<span class="n">Optional</span><span class="o">&lt;</span><span class="n">Value</span><span class="o">&gt;</span> <span class="n">get</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span> <span class="n">key</span><span class="p">);</span>
 
-<h1>2-3-4树</h1>
-
-<p>2-3-4树可谓红黑树的前身，理解了它有助理解红黑树，其中有三类节点 2-node, 3-node &amp; 4-node,他的条件是到所有叶节点的路径长度均相同。
-<img src="/public/upload/rbt/234nodes.jpg" alt="节点类型">
-<img src="/public/upload/rbt/234.png" alt="2-3-4树"></p>
-
-<p>2-3-4树的插入很简单，若最后在2/3-node下只要把它并入那个节点，若是4-node，就把中间那个提到上一层，下面分裂为两个（Note：可能又会引起上一层的问题）
-由上述思路即得 Button-up 算法。
-<img src="/public/upload/rbt/insert.png" alt="insert">
-我们发现4-node不利插入，于是可在向下查找时，遇到4-node便分裂（note： 因上一层由归纳假设无4-node,故无需递归），这就是 top-down 方法了。</p>
-
-<h1>从2-3-4树到红黑树</h1>
-
-<p>2-3-4树虽易于理解，可惜节点种类多实现不便，是否可用二叉树来表示？
-<img src="/public/upload/rbt/nodes.png" alt="对应红黑树表示">
-红色表示属于父节点表示的node
-这样一搞，发现与红黑树性质等同（黑高度==对应2-3-4树高度）</p>
-
-<h1>Button-up insert</h1>
-
-<p>那么对应的： 新节点默认红色 &lt;-&gt; 并入上层节点</p>
-
-<p>分裂节点：<img src="/public/upload/rbt/split.png" alt="分裂节点">
-(note:遇有些情况要化为标准型）
-<img src="/public/upload/rbt/standardize.png" alt="标准化">
-[Update:2015/5/31
-上面这些转化操作都可以使用3+4重构和统一重染色完成，see also <a href="http://user.qzone.qq.com/3101371795/blog/1432878594" target="_blank">樊腿巨作 基于3+4统一重构和统一重染色操作的红黑树归约实现</a>
-]</p>
-
-<h1>Top-down insert</h1>
-
-<p>每次遇到两孩子均为红色（4-node）就分裂（可能要修正形式）</p>
-
-<p>每次遇到一孩子为红色（3-node)(qzw:走到红色怎么办呢？）,其实什么都不用做，最后修正形式即可。</p>
-
-<p>[Update:2015/5/24
-如果有人有强迫症，认为必须走黑色，而且明明可以通过旋转变成黑色！
-请看下面情况，程序会在两种状态间不停转换：<img src="/public/upload/rbt/bug.png" alt="bug!">]</p>
-
-<p>孩子双黑（2-node），无需操作。</p>
-
-<p>恭喜你已经掌握了红黑树插入的的全部技术。</p>
-
-<p>Happy Hacking!</p>
+<span class="kt">int</span> <span class="n">t</span> <span class="o">=</span> <span class="n">db</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">input</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">c_str</span><span class="p">());</span> <span class="c1">//为何可以通过编译？</span></code></pre></div>
 
 </div>
 
 <div class="related">
   <h2>Related Posts</h2>
   <ul class="related-posts">
-    
-      <li>
-        <h3>
-          <a href="/2015/08/20/cpp-type-pitfall/">
-            c++趣题一道
-            <small>20 Aug 2015</small>
-          </a>
-        </h3>
-      </li>
     
       <li>
         <h3>
@@ -202,10 +151,19 @@
         </h3>
       </li>
     
+      <li>
+        <h3>
+          <a href="/2015/05/22/RedBlackTree/">
+            对红黑树的一种解释
+            <small>22 May 2015</small>
+          </a>
+        </h3>
+      </li>
+    
   </ul>
 </div>
 <!-- 多说评论框 start -->
-<div class="ds-thread" data-thread-key="/2015/05/22/RedBlackTree" data-title="对红黑树的一种解释" data-url="http://codeworm96.github.io//2015/05/22/RedBlackTree/"></div>
+<div class="ds-thread" data-thread-key="/2015/08/20/cpp-type-pitfall" data-title="c++趣题一道" data-url="http://codeworm96.github.io//2015/08/20/cpp-type-pitfall/"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
