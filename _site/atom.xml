@@ -4,7 +4,7 @@
  <title>codeworm96</title>
  <link href="http://codeworm96.github.io//atom.xml" rel="self"/>
  <link href="http://codeworm96.github.io//"/>
- <updated>2015-08-20T19:13:52+08:00</updated>
+ <updated>2015-09-09T09:35:45+08:00</updated>
  <id>http://codeworm96.github.io/</id>
  <author>
    <name>codeworm96</name>
@@ -532,7 +532,8 @@ S[i..j] = 1 if i == j
 &lt;/pre&gt;
 转移
 &lt;pre&gt;
-S[i..j] = | str[i] == str[j] = S[i+1..j] + S[i..j-1] + 1
+S[i..j] = | str[i] == str[j] = S[i+1..j] + S[i..j-1] + 1 
+          (注: 由 S[i+1..j] + S[i..j-1] - S[i+1..j-1] + S[i+1..j-1] + 1 化简而得)
           | otherwise = S[i+1..j] + S[i..j-1] - S[i+1..j-1] (容斥原理)
 &lt;/pre&gt;&lt;/p&gt;
 

@@ -339,7 +339,8 @@ S[i..j] = 1 if i == j
 </pre>
 转移
 <pre>
-S[i..j] = | str[i] == str[j] = S[i+1..j] + S[i..j-1] + 1
+S[i..j] = | str[i] == str[j] = S[i+1..j] + S[i..j-1] + 1 
+          (注: 由 S[i+1..j] + S[i..j-1] - S[i+1..j-1] + S[i+1..j-1] + 1 化简而得)
           | otherwise = S[i+1..j] + S[i..j-1] - S[i+1..j-1] (容斥原理)
 </pre></p>
 
