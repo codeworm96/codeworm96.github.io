@@ -4,7 +4,7 @@
  <title>codeworm96</title>
  <link href="http://codeworm96.github.io//atom.xml" rel="self"/>
  <link href="http://codeworm96.github.io//"/>
- <updated>2015-09-09T09:35:45+08:00</updated>
+ <updated>2015-09-09T09:53:41+08:00</updated>
  <id>http://codeworm96.github.io/</id>
  <author>
    <name>codeworm96</name>
@@ -35,6 +35,12 @@
 &lt;span class=&quot;n&quot;&gt;Optional&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 
 &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c_str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//为何可以通过编译？&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;!-- more --&gt;
+
+&lt;p&gt;答案是类型转换的问题，Optional&amp;lt;Value&amp;gt; 先通过 operator bool() 转换到 bool 后又被提升为 int.&lt;/p&gt;
+
+&lt;p&gt;感觉自动的类型转换并不是一个好的特性。有时候类型系统的束缚确实会带来不便，但它确实能避免很多问题。还是利大于弊的。&lt;/p&gt;
 </content>
  </entry>
  
