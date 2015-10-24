@@ -109,6 +109,46 @@
   
   <div class="post">
     <h1 class="post-title">
+      <a href="/2015/10/22/either-monad-and-exception/">
+        Either 与异常处理的联系
+      </a>
+    </h1>
+
+    <span class="post-date">22 Oct 2015</span>
+    <div class="post-content-truncate">
+    
+      <p>在程序设计中，我们不可避免的会遇到错误的处理，在支持异常的语言中，我们会用异常来实现。如：</p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">try</span><span class="p">:</span>
+    <span class="n">do_something</span>
+<span class="k">except</span> <span class="n">ErrorA</span><span class="p">:</span>
+    <span class="o">...</span>
+<span class="k">except</span> <span class="n">ErrorB</span><span class="p">:</span>
+    <span class="o">...</span></code></pre></div>
+
+<p>在函数式的语言中，我们会用 Either 对程序正常和错误的结果进行抽象。上段程序就转化为：</p>
+
+<div class="highlight"><pre><code class="language-haskell" data-lang="haskell"><span class="kr">data</span> <span class="kt">Error</span> <span class="ow">=</span> <span class="kt">ErrorA</span> <span class="o">|</span> <span class="kt">ErrorB</span>
+
+<span class="kr">type</span> <span class="kt">Result</span> <span class="n">a</span> <span class="ow">=</span> <span class="kt">Either</span> <span class="kt">Error</span> <span class="n">a</span>
+
+<span class="nf">do_something</span> <span class="ow">::</span> <span class="kt">Result</span> <span class="n">a</span>
+
+<span class="nf">main</span> <span class="ow">=</span> <span class="kr">let</span> <span class="n">res</span> <span class="ow">=</span> <span class="n">do_something</span> <span class="kr">in</span>
+  <span class="kr">case</span> <span class="n">res</span> <span class="kr">of</span>
+    <span class="kt">Right</span> <span class="kr">_</span> <span class="ow">-&gt;</span> <span class="n">print</span> <span class="s">&quot;ok&quot;</span>
+    <span class="kt">Left</span> <span class="kt">ErrorA</span> <span class="ow">-&gt;</span> <span class="n">print</span> <span class="s">&quot;ErrorA&quot;</span>
+    <span class="kt">Left</span> <span class="kt">ErrorB</span> <span class="ow">-&gt;</span> <span class="n">print</span> <span class="s">&quot;ErrorB&quot;</span></code></pre></div>
+
+<p>我们错误处理的需求是：当程序出错时，需要进入另外的执行流进行处理（可能要区分错误类型），这两段程序分别通过各自语言提供的特性，较为优雅的实现了这一点。
+这两段程序虽然运用特性不同，但实现的功能相同，体现了两种编程范式的殊途同归。</p>
+
+    
+    </div>
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
       <a href="/2015/08/20/cpp-type-pitfall/">
         c++趣题一道
       </a>
@@ -199,24 +239,6 @@
 <h1>prerequisite</h1>
 
 <p>you should familiar with rotation</p>
-
-
-    
-    </div>
-  </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/2015/05/05/risp2/">
-        再次折腾解释器
-      </a>
-    </h1>
-
-    <span class="post-date">05 May 2015</span>
-    <div class="post-content-truncate">
-    
-      <p>搞 lab 之余又把之前的解释器搞了一搞。之前学习了 Monad 这个抽象，也了解了其在
-Parser 中的运用，为了加深理解，就在 ruby 里把这套抽象搞了出来，把原来的 Parser 换掉。同时又加了点测试。下面记一下经验教训。</p>
 
 
     

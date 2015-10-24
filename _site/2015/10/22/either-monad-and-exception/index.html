@@ -11,7 +11,7 @@
 
   <title>
     
-      编程之美2015初赛第一轮 &middot; codeworm96
+      Either 与异常处理的联系 &middot; codeworm96
     
   </title>
 
@@ -106,32 +106,39 @@
 
       <div class="container content">
         <div class="post">
-  <h1 class="post-title">编程之美2015初赛第一轮</h1>
-  <span class="post-date">25 Apr 2015</span>
-  <p>这一场简直崩了。一开始看题发现第三题还比较可做，题中的关系反自反，非对称，非传递性质并不好，来了一下对称闭包，观察到关系图中并没有环，结果想到了二分图，并没有做出。
-后来发现对称闭包的补关系是相容关系，性质较好，可将题目化为求最大相容类中元素最多的一个有多少元素，然后写了个O(n^3)的解，过了小数据。
-（后来了解到最大独立集的概念，正确的展开是有关系图无环-&gt;这是<del>树</del>森林(可能不联通)-&gt;树形dp求最大独立集)</p>
+  <h1 class="post-title">Either 与异常处理的联系</h1>
+  <span class="post-date">22 Oct 2015</span>
+  <p>在程序设计中，我们不可避免的会遇到错误的处理，在支持异常的语言中，我们会用异常来实现。如：</p>
 
-<p>之后的时间写第一题小数据，思想是根据改颜色点相邻点的信息更新个数，应该是可过的，但T了，赛后看其他人代码，思路是对的，但常数写挂了。（看来ICS要好好学了）</p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">try</span><span class="p">:</span>
+    <span class="n">do_something</span>
+<span class="k">except</span> <span class="n">ErrorA</span><span class="p">:</span>
+    <span class="o">...</span>
+<span class="k">except</span> <span class="n">ErrorB</span><span class="p">:</span>
+    <span class="o">...</span></code></pre></div>
 
-<p>第二题暂无想法。</p>
+<p>在函数式的语言中，我们会用 Either 对程序正常和错误的结果进行抽象。上段程序就转化为：</p>
 
-<p>（还好没有爆零）</p>
+<div class="highlight"><pre><code class="language-haskell" data-lang="haskell"><span class="kr">data</span> <span class="kt">Error</span> <span class="ow">=</span> <span class="kt">ErrorA</span> <span class="o">|</span> <span class="kt">ErrorB</span>
+
+<span class="kr">type</span> <span class="kt">Result</span> <span class="n">a</span> <span class="ow">=</span> <span class="kt">Either</span> <span class="kt">Error</span> <span class="n">a</span>
+
+<span class="nf">do_something</span> <span class="ow">::</span> <span class="kt">Result</span> <span class="n">a</span>
+
+<span class="nf">main</span> <span class="ow">=</span> <span class="kr">let</span> <span class="n">res</span> <span class="ow">=</span> <span class="n">do_something</span> <span class="kr">in</span>
+  <span class="kr">case</span> <span class="n">res</span> <span class="kr">of</span>
+    <span class="kt">Right</span> <span class="kr">_</span> <span class="ow">-&gt;</span> <span class="n">print</span> <span class="s">&quot;ok&quot;</span>
+    <span class="kt">Left</span> <span class="kt">ErrorA</span> <span class="ow">-&gt;</span> <span class="n">print</span> <span class="s">&quot;ErrorA&quot;</span>
+    <span class="kt">Left</span> <span class="kt">ErrorB</span> <span class="ow">-&gt;</span> <span class="n">print</span> <span class="s">&quot;ErrorB&quot;</span></code></pre></div>
+
+<p>我们错误处理的需求是：当程序出错时，需要进入另外的执行流进行处理（可能要区分错误类型），这两段程序分别通过各自语言提供的特性，较为优雅的实现了这一点。
+这两段程序虽然运用特性不同，但实现的功能相同，体现了两种编程范式的殊途同归。</p>
 
 </div>
 
 <div class="related">
   <h2>Related Posts</h2>
   <ul class="related-posts">
-    
-      <li>
-        <h3>
-          <a href="/2015/10/22/either-monad-and-exception/">
-            Either 与异常处理的联系
-            <small>22 Oct 2015</small>
-          </a>
-        </h3>
-      </li>
     
       <li>
         <h3>
@@ -151,10 +158,19 @@
         </h3>
       </li>
     
+      <li>
+        <h3>
+          <a href="/2015/05/24/RedBlackTree2/">
+            对红黑树的一种解释（删除篇）
+            <small>24 May 2015</small>
+          </a>
+        </h3>
+      </li>
+    
   </ul>
 </div>
 <!-- 多说评论框 start -->
-<div class="ds-thread" data-thread-key="/2015/04/25/bop2015round1" data-title="编程之美2015初赛第一轮" data-url="http://codeworm96.github.io//2015/04/25/bop2015round1/"></div>
+<div class="ds-thread" data-thread-key="/2015/10/22/either-monad-and-exception" data-title="Either 与异常处理的联系" data-url="http://codeworm96.github.io//2015/10/22/either-monad-and-exception/"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
