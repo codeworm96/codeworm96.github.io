@@ -109,6 +109,35 @@
   
   <div class="post">
     <h1 class="post-title">
+      <a href="/2015/05/22/RedBlackTree/">
+        对红黑树的一种解释
+      </a>
+    </h1>
+
+    <span class="post-date">22 May 2015</span>
+    <div class="post-content-truncate">
+    
+      <blockquote>
+<p>mjc同学，说说你的看法。 --Prof. qzw</p>
+</blockquote>
+
+<p>红黑树的case非常之多，令我们这样的沙茶不能理解。或许只有mjc这样的大神才能理解吧。
+虽然经过验证，其中的各种操作都能保证不变式始终成立，但总是感觉其中有着更深层的奥秘。</p>
+
+<p>或许，要真正理解一个概念必须逆流而上，寻找其提出者当时的想法。今日阅读红黑树发明者之一 Robert Sedgewick 的 slide，受益匪浅，
+结合自己的愚见，稍作记录。</p>
+
+<h1>prerequisite</h1>
+
+<p>you should familiar with rotation</p>
+
+
+    
+    </div>
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
       <a href="/2015/05/05/risp2/">
         再次折腾解释器
       </a>
@@ -184,65 +213,6 @@ Parser 中的运用，为了加深理解，就在 ruby 里把这套抽象搞了�
 (竟然没fst～）
 现在把自己的解法分享一下，顺便做个记录。</p>
 
-
-    
-    </div>
-  </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/2015/02/17/chairmantree/">
-        函数式二叉树
-      </a>
-    </h1>
-
-    <span class="post-date">17 Feb 2015</span>
-    <div class="post-content-truncate">
-    
-      <p>在搞 IO 时，曾听大神介绍主席树/函数式线段树/可持久化线段树，当时对要修改时另外开点不是很习惯，不过现在已经很自然了。</p>
-
-<div class="highlight"><pre><code class="language-racket" data-lang="racket"><span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="n">make-tree</span> <span class="n">entry</span> <span class="n">lchild</span> <span class="n">rchild</span><span class="p">)</span>
-  <span class="p">(</span><span class="nb">list</span> <span class="n">entry</span> <span class="n">lchild</span> <span class="n">rchild</span><span class="p">))</span>
-<span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="n">entry</span> <span class="n">tree</span><span class="p">)</span>
-  <span class="p">(</span><span class="nb">car</span> <span class="n">tree</span><span class="p">))</span>
-<span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="n">lchild</span> <span class="n">tree</span><span class="p">)</span>
-  <span class="p">(</span><span class="nb">cadr</span> <span class="n">tree</span><span class="p">))</span>
-<span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="n">rchild</span> <span class="n">tree</span><span class="p">)</span>
-  <span class="p">(</span><span class="nb">caddr</span> <span class="n">tree</span><span class="p">))</span>
-
-<span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="n">insert</span> <span class="n">x</span> <span class="n">tree</span><span class="p">)</span>
-  <span class="p">(</span><span class="k">cond</span>
-    <span class="p">((</span><span class="nb">null?</span> <span class="n">tree</span><span class="p">)</span> <span class="p">(</span><span class="n">make-tree</span> <span class="n">x</span> <span class="o">&#39;</span><span class="p">()</span> <span class="o">&#39;</span><span class="p">()))</span>
-    <span class="p">((</span><span class="nb">&gt;</span> <span class="n">x</span> <span class="p">(</span><span class="n">entry</span> <span class="n">tree</span><span class="p">))</span> <span class="p">(</span><span class="n">make-tree</span> <span class="p">(</span><span class="n">entry</span> <span class="n">tree</span><span class="p">)</span> <span class="p">(</span><span class="n">lchild</span> <span class="n">tree</span><span class="p">)</span> <span class="p">(</span><span class="n">insert</span> <span class="n">x</span> <span class="p">(</span><span class="n">rchild</span> <span class="n">tree</span><span class="p">))))</span>
-    <span class="p">((</span><span class="nb">&lt;</span> <span class="n">x</span> <span class="p">(</span><span class="n">entry</span> <span class="n">tree</span><span class="p">))</span> <span class="p">(</span><span class="n">make-tree</span> <span class="p">(</span><span class="n">entry</span> <span class="n">tree</span><span class="p">)</span> <span class="p">(</span><span class="n">insert</span> <span class="n">x</span> <span class="p">(</span><span class="n">lchild</span> <span class="n">tree</span><span class="p">))</span> <span class="p">(</span><span class="n">rchild</span> <span class="n">tree</span><span class="p">)))</span>
-    <span class="p">(</span><span class="k">else</span> <span class="n">tree</span><span class="p">)))</span>
-
-
-<span class="c1">;;拍扁</span>
-<span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nb">flatten</span> <span class="n">tree</span><span class="p">)</span>
-  <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="n">flat</span> <span class="n">tree</span> <span class="n">res</span><span class="p">)</span>
-    <span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="nb">null?</span> <span class="n">tree</span><span class="p">)</span>
-        <span class="n">res</span>
-        <span class="p">(</span><span class="n">flat</span> <span class="p">(</span><span class="n">lchild</span> <span class="n">tree</span><span class="p">)</span>
-              <span class="p">(</span><span class="nb">cons</span> <span class="p">(</span><span class="n">entry</span> <span class="n">tree</span><span class="p">)</span> <span class="p">(</span><span class="n">flat</span> <span class="p">(</span><span class="n">rchild</span> <span class="n">tree</span><span class="p">)</span>
-                                       <span class="n">res</span><span class="p">)))))</span>
-  <span class="p">(</span><span class="n">flat</span> <span class="n">tree</span> <span class="o">&#39;</span><span class="p">()))</span>
-
-<span class="c1">;;重建</span>
-<span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="n">build</span> <span class="nb">list</span><span class="p">)</span>
-  <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="n">part-build</span> <span class="n">len</span> <span class="nb">list</span><span class="p">)</span>
-    <span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="nb">=</span> <span class="mi">0</span> <span class="n">len</span><span class="p">)</span>
-        <span class="p">(</span><span class="nb">cons</span> <span class="o">&#39;</span><span class="p">()</span> <span class="nb">list</span><span class="p">)</span>
-        <span class="p">(</span><span class="k">let</span> <span class="p">((</span><span class="n">llen</span> <span class="p">(</span><span class="nb">quotient</span> <span class="n">len</span> <span class="mi">2</span><span class="p">)))</span>
-          <span class="p">(</span><span class="k">let</span> <span class="p">((</span><span class="n">lres</span> <span class="p">(</span><span class="n">part-build</span> <span class="n">llen</span> <span class="nb">list</span><span class="p">)))</span>
-            <span class="p">(</span><span class="k">let</span> <span class="p">((</span><span class="n">lc</span> <span class="p">(</span><span class="nb">car</span> <span class="n">lres</span><span class="p">))</span>
-                  <span class="p">(</span><span class="n">rlist</span> <span class="p">(</span><span class="nb">cdr</span> <span class="n">lres</span><span class="p">)))</span>
-              <span class="p">(</span><span class="k">let</span> <span class="p">((</span><span class="k">this</span> <span class="p">(</span><span class="nb">car</span> <span class="n">rlist</span><span class="p">))</span>
-                    <span class="p">(</span><span class="n">rres</span> <span class="p">(</span><span class="n">part-build</span> <span class="p">(</span><span class="nb">-</span> <span class="n">len</span> <span class="p">(</span><span class="nb">+</span> <span class="n">llen</span> <span class="mi">1</span><span class="p">))</span> <span class="p">(</span><span class="nb">cdr</span> <span class="n">rlist</span><span class="p">))))</span>
-                <span class="p">(</span><span class="k">let</span> <span class="p">((</span><span class="n">rc</span> <span class="p">(</span><span class="nb">car</span> <span class="n">rres</span><span class="p">))</span>
-                      <span class="p">(</span><span class="n">left</span> <span class="p">(</span><span class="nb">cdr</span> <span class="n">rres</span><span class="p">)))</span>
-                  <span class="p">(</span><span class="nb">cons</span> <span class="p">(</span><span class="n">make-tree</span> <span class="k">this</span> <span class="n">lc</span> <span class="n">rc</span><span class="p">)</span> <span class="n">left</span><span class="p">))))))))</span>
-  <span class="p">(</span><span class="nb">car</span> <span class="p">(</span><span class="n">part-build</span> <span class="p">(</span><span class="nb">length</span> <span class="nb">list</span><span class="p">)</span> <span class="nb">list</span><span class="p">)))</span></code></pre></div>
 
     
     </div>

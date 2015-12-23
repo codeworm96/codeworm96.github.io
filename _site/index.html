@@ -109,6 +109,58 @@
   
   <div class="post">
     <h1 class="post-title">
+      <a href="/2015/12/23/linking-static-variable/">
+        static 与链接
+      </a>
+    </h1>
+
+    <span class="post-date">23 Dec 2015</span>
+    <div class="post-content-truncate">
+    
+      <p>今天的 ics 习题课上有一道习题，题意大致如下：</p>
+
+<div class="highlight"><pre><code class="language-c" data-lang="c"><span class="cm">/* m1.c */</span>
+<span class="kt">int</span> <span class="nf">p</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">p</span><span class="p">();</span>
+<span class="p">}</span></code></pre></div>
+
+<div class="highlight"><pre><code class="language-c" data-lang="c"><span class="cm">/* m2.c */</span>
+<span class="kt">int</span> <span class="n">a</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">};</span>
+<span class="k">static</span> <span class="kt">int</span> <span class="n">p</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span>
+<span class="kt">int</span> <span class="nf">p2</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">p</span><span class="p">;</span>
+<span class="p">}</span></code></pre></div>
+
+<p>首先问 m1 里的 p 引用的是哪个定义，这一问没有太大问题， m2 里 p 是 static 的，因而是 local 的，m1 里自然不会用。
+显然是用的 m1 里的 p 定义。</p>
+
+<p>不过第二问就比较费解，问 m2 里 p 引用的是哪个定义。讲道理的话，m2 里 p 既可能引用自己里面 static 的 p 的local 符号，也可能引用 m1 中的 global 强符号。
+所以，还是看看 gcc 的编译结果把。</p>
+
+<div class="highlight"><pre><code class="language-text" data-lang="text">00000000 &lt;p2&gt;:
+   0:   55                      push   %ebp
+   1:   89 e5                   mov    %esp,%ebp
+   3:   a1 28 00 00 00          mov    0x28,%eax
+            4: R_386_32 .data
+   8:   5d                      pop    %ebp
+   9:   c3                      ret</code></pre></div>
+
+<p>结果是 relocation table 中的对应项的符号是 .data, 而不是 p. 所以问题是一个伪命题，linker 根本不需要解决 m2 里 p 的引用！
+仔细查看汇编代码我们发现，编译器是把改static 变量距 .data section 首的偏移放进去占位，这样链接时把 .data 段的实际地址加上就得到了正确地址。
+这应该就是编译器处理 static 变量的机制了。</p>
+
+    
+    </div>
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
       <a href="/2015/10/22/either-monad-and-exception/">
         Either 与异常处理的联系
       </a>
@@ -210,35 +262,6 @@
     <div class="post-content-truncate">
     
       <p>(接上篇）</p>
-
-
-    
-    </div>
-  </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/2015/05/22/RedBlackTree/">
-        对红黑树的一种解释
-      </a>
-    </h1>
-
-    <span class="post-date">22 May 2015</span>
-    <div class="post-content-truncate">
-    
-      <blockquote>
-<p>mjc同学，说说你的看法。 --Prof. qzw</p>
-</blockquote>
-
-<p>红黑树的case非常之多，令我们这样的沙茶不能理解。或许只有mjc这样的大神才能理解吧。
-虽然经过验证，其中的各种操作都能保证不变式始终成立，但总是感觉其中有着更深层的奥秘。</p>
-
-<p>或许，要真正理解一个概念必须逆流而上，寻找其提出者当时的想法。今日阅读红黑树发明者之一 Robert Sedgewick 的 slide，受益匪浅，
-结合自己的愚见，稍作记录。</p>
-
-<h1>prerequisite</h1>
-
-<p>you should familiar with rotation</p>
 
 
     

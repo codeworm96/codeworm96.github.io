@@ -11,7 +11,7 @@
 
   <title>
     
-      Either 与异常处理的联系 &middot; codeworm96
+      static 与链接 &middot; codeworm96
     
   </title>
 
@@ -106,33 +106,45 @@
 
       <div class="container content">
         <div class="post">
-  <h1 class="post-title">Either 与异常处理的联系</h1>
-  <span class="post-date">22 Oct 2015</span>
-  <p>在程序设计中，我们不可避免的会遇到错误的处理，在支持异常的语言中，我们会用异常来实现。如：</p>
+  <h1 class="post-title">static 与链接</h1>
+  <span class="post-date">23 Dec 2015</span>
+  <p>今天的 ics 习题课上有一道习题，题意大致如下：</p>
 
-<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">try</span><span class="p">:</span>
-    <span class="n">do_something</span>
-<span class="k">except</span> <span class="n">ErrorA</span><span class="p">:</span>
-    <span class="o">...</span>
-<span class="k">except</span> <span class="n">ErrorB</span><span class="p">:</span>
-    <span class="o">...</span></code></pre></div>
+<div class="highlight"><pre><code class="language-c" data-lang="c"><span class="cm">/* m1.c */</span>
+<span class="kt">int</span> <span class="nf">p</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="p">}</span>
 
-<p>在函数式的语言中，我们会用 Either 对程序正常和错误的结果进行抽象。上段程序就转化为：</p>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">p</span><span class="p">();</span>
+<span class="p">}</span></code></pre></div>
 
-<div class="highlight"><pre><code class="language-haskell" data-lang="haskell"><span class="kr">data</span> <span class="kt">Error</span> <span class="ow">=</span> <span class="kt">ErrorA</span> <span class="o">|</span> <span class="kt">ErrorB</span>
+<div class="highlight"><pre><code class="language-c" data-lang="c"><span class="cm">/* m2.c */</span>
+<span class="kt">int</span> <span class="n">a</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">};</span>
+<span class="k">static</span> <span class="kt">int</span> <span class="n">p</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span>
+<span class="kt">int</span> <span class="nf">p2</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">p</span><span class="p">;</span>
+<span class="p">}</span></code></pre></div>
 
-<span class="kr">type</span> <span class="kt">Result</span> <span class="n">a</span> <span class="ow">=</span> <span class="kt">Either</span> <span class="kt">Error</span> <span class="n">a</span>
+<p>首先问 m1 里的 p 引用的是哪个定义，这一问没有太大问题， m2 里 p 是 static 的，因而是 local 的，m1 里自然不会用。
+显然是用的 m1 里的 p 定义。</p>
 
-<span class="nf">do_something</span> <span class="ow">::</span> <span class="kt">Result</span> <span class="n">a</span>
+<p>不过第二问就比较费解，问 m2 里 p 引用的是哪个定义。讲道理的话，m2 里 p 既可能引用自己里面 static 的 p 的local 符号，也可能引用 m1 中的 global 强符号。
+所以，还是看看 gcc 的编译结果把。</p>
 
-<span class="nf">main</span> <span class="ow">=</span> <span class="kr">let</span> <span class="n">res</span> <span class="ow">=</span> <span class="n">do_something</span> <span class="kr">in</span>
-  <span class="kr">case</span> <span class="n">res</span> <span class="kr">of</span>
-    <span class="kt">Right</span> <span class="kr">_</span> <span class="ow">-&gt;</span> <span class="n">print</span> <span class="s">&quot;ok&quot;</span>
-    <span class="kt">Left</span> <span class="kt">ErrorA</span> <span class="ow">-&gt;</span> <span class="n">print</span> <span class="s">&quot;ErrorA&quot;</span>
-    <span class="kt">Left</span> <span class="kt">ErrorB</span> <span class="ow">-&gt;</span> <span class="n">print</span> <span class="s">&quot;ErrorB&quot;</span></code></pre></div>
+<div class="highlight"><pre><code class="language-text" data-lang="text">00000000 &lt;p2&gt;:
+   0:   55                      push   %ebp
+   1:   89 e5                   mov    %esp,%ebp
+   3:   a1 28 00 00 00          mov    0x28,%eax
+            4: R_386_32 .data
+   8:   5d                      pop    %ebp
+   9:   c3                      ret</code></pre></div>
 
-<p>我们错误处理的需求是：当程序出错时，需要进入另外的执行流进行处理（可能要区分错误类型），这两段程序分别通过各自语言提供的特性，较为优雅的实现了这一点。
-这两段程序虽然运用特性不同，但实现的功能相同，体现了两种编程范式的殊途同归。</p>
+<p>结果是 relocation table 中的对应项的符号是 .data, 而不是 p. 所以问题是一个伪命题，linker 根本不需要解决 m2 里 p 的引用！
+仔细查看汇编代码我们发现，编译器是把改static 变量距 .data section 首的偏移放进去占位，这样链接时把 .data 段的实际地址加上就得到了正确地址。
+这应该就是编译器处理 static 变量的机制了。</p>
 
 </div>
 
@@ -142,9 +154,9 @@
     
       <li>
         <h3>
-          <a href="/2015/12/23/linking-static-variable/">
-            static 与链接
-            <small>23 Dec 2015</small>
+          <a href="/2015/10/22/either-monad-and-exception/">
+            Either 与异常处理的联系
+            <small>22 Oct 2015</small>
           </a>
         </h3>
       </li>
@@ -170,7 +182,7 @@
   </ul>
 </div>
 <!-- 多说评论框 start -->
-<div class="ds-thread" data-thread-key="/2015/10/22/either-monad-and-exception" data-title="Either 与异常处理的联系" data-url="http://codeworm96.github.io//2015/10/22/either-monad-and-exception/"></div>
+<div class="ds-thread" data-thread-key="/2015/12/23/linking-static-variable" data-title="static 与链接" data-url="http://codeworm96.github.io//2015/12/23/linking-static-variable/"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
