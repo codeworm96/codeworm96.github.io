@@ -86,7 +86,7 @@
   </div>
   <div class="sidebar-item">
     <p>
-      &copy; 2015. All rights reserved.
+      &copy; 2016. All rights reserved.
     </p>
   </div>
 </div>
@@ -109,6 +109,42 @@
   
   <div class="post">
     <h1 class="post-title">
+      <a href="/2016/01/06/computability/">
+        可计算理论的一些思考
+      </a>
+    </h1>
+
+    <span class="post-date">06 Jan 2016</span>
+    <div class="post-content-truncate">
+    
+      <h2>构造数据抽象</h2>
+
+<p>可计算理论中的一个重要的思想就是万物为数。我们涉及到的很多对象的集合都是 denumerable 的，都与自然数存在一一对应。
+同时我们也可以证明 pair, n-tuple, list 也都是 denumerable 的，这些在可计算理论中就起到了数据结构的作用。</p>
+
+<h2>构造过程抽象</h2>
+
+<p>要研究计算，必须先要有可描述计算过程的计算模型。在这门课中有 URM， 图灵机， recursive function 三个主要的计算模型。
+其中 recursive fucntion 又是由 primitive recursive function 加上最小化操作升级而来。
+（引入最小化操作不仅带来了 partial function, 也带来了新的 total function 如 ackerman function）
+这些计算模型都有各自关于可定义性和可计算性的定义。但 Church-Turing-Thesis 使所有的计算模型得到了大一统。
+从此可计算理论进入了更为抽象的时代，不再受限于具体的计算模型。</p>
+
+<p>S-M-N 定理的一个重要作用是通过其可以构造出以函数编码为参数生成函数编码的函数，不禁令人联想到 python 中的装饰器。而通用函数又令人想到 eval 函数。</p>
+
+<p>进一步深究下去，我们来到了计算能力的边界，我们证明出了 x in Wx 是不可解的！然而，我们并没有放弃治疗。转而研究它们的部分特征函数，至少它们是可以计算的。
+然而K的补不是 r.e. set ...</p>
+
+<p>CTT 是可计算模型中的大一统。自然数上的集合，自然数到自然数的函数，自然数上的谓词构成了可计算中另一个大一统。</p>
+
+<p>归约是可计算理论中的一大利器，问题并不是孤立的，而是存在于一个 distributive lattice 中。通过归约往往可以通过已有的结论轻松解决新的问题。</p>
+
+    
+    </div>
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
       <a href="/2015/12/23/linking-static-variable/">
         static 与链接
       </a>
@@ -119,7 +155,7 @@
     
       <p>今天的 ics 习题课上有一道习题，题意大致如下：</p>
 
-<div class="highlight"><pre><code class="language-c" data-lang="c"><span class="cm">/* m1.c */</span>
+<figure class="highlight"><pre><code class="language-c" data-lang="c"><span class="cm">/* m1.c */</span>
 <span class="kt">int</span> <span class="nf">p</span><span class="p">()</span>
 <span class="p">{</span>
 <span class="p">}</span>
@@ -127,15 +163,15 @@
 <span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
 <span class="p">{</span>
     <span class="n">p</span><span class="p">();</span>
-<span class="p">}</span></code></pre></div>
+<span class="p">}</span></code></pre></figure>
 
-<div class="highlight"><pre><code class="language-c" data-lang="c"><span class="cm">/* m2.c */</span>
+<figure class="highlight"><pre><code class="language-c" data-lang="c"><span class="cm">/* m2.c */</span>
 <span class="kt">int</span> <span class="n">a</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">};</span>
 <span class="k">static</span> <span class="kt">int</span> <span class="n">p</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span>
 <span class="kt">int</span> <span class="nf">p2</span><span class="p">()</span>
 <span class="p">{</span>
     <span class="k">return</span> <span class="n">p</span><span class="p">;</span>
-<span class="p">}</span></code></pre></div>
+<span class="p">}</span></code></pre></figure>
 
 <p>首先问 m1 里的 p 引用的是哪个定义，这一问没有太大问题， m2 里 p 是 static 的，因而是 local 的，m1 里自然不会用。
 显然是用的 m1 里的 p 定义。</p>
@@ -143,13 +179,13 @@
 <p>不过第二问就比较费解，问 m2 里 p 引用的是哪个定义。讲道理的话，m2 里 p 既可能引用自己里面 static 的 p 的local 符号，也可能引用 m1 中的 global 强符号。
 所以，还是看看 gcc 的编译结果把。</p>
 
-<div class="highlight"><pre><code class="language-text" data-lang="text">00000000 &lt;p2&gt;:
+<figure class="highlight"><pre><code class="language-text" data-lang="text">00000000 &lt;p2&gt;:
    0:   55                      push   %ebp
    1:   89 e5                   mov    %esp,%ebp
    3:   a1 28 00 00 00          mov    0x28,%eax
             4: R_386_32 .data
    8:   5d                      pop    %ebp
-   9:   c3                      ret</code></pre></div>
+   9:   c3                      ret    </code></pre></figure>
 
 <p>结果是 relocation table 中的对应项的符号是 .data, 而不是 p. 所以问题是一个伪命题，linker 根本不需要解决 m2 里 p 的引用！
 仔细查看汇编代码我们发现，编译器是把改static 变量距 .data section 首的偏移放进去占位，这样链接时把 .data 段的实际地址加上就得到了正确地址。
@@ -171,26 +207,26 @@
     
       <p>在程序设计中，我们不可避免的会遇到错误的处理，在支持异常的语言中，我们会用异常来实现。如：</p>
 
-<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">try</span><span class="p">:</span>
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">try</span><span class="p">:</span>
     <span class="n">do_something</span>
 <span class="k">except</span> <span class="n">ErrorA</span><span class="p">:</span>
     <span class="o">...</span>
 <span class="k">except</span> <span class="n">ErrorB</span><span class="p">:</span>
-    <span class="o">...</span></code></pre></div>
+    <span class="o">...</span></code></pre></figure>
 
 <p>在函数式的语言中，我们会用 Either 对程序正常和错误的结果进行抽象。上段程序就转化为：</p>
 
-<div class="highlight"><pre><code class="language-haskell" data-lang="haskell"><span class="kr">data</span> <span class="kt">Error</span> <span class="ow">=</span> <span class="kt">ErrorA</span> <span class="o">|</span> <span class="kt">ErrorB</span>
+<figure class="highlight"><pre><code class="language-haskell" data-lang="haskell"><span class="kr">data</span> <span class="kt">Error</span> <span class="o">=</span> <span class="kt">ErrorA</span> <span class="o">|</span> <span class="kt">ErrorB</span>
 
-<span class="kr">type</span> <span class="kt">Result</span> <span class="n">a</span> <span class="ow">=</span> <span class="kt">Either</span> <span class="kt">Error</span> <span class="n">a</span>
+<span class="kr">type</span> <span class="kt">Result</span> <span class="n">a</span> <span class="o">=</span> <span class="kt">Either</span> <span class="kt">Error</span> <span class="n">a</span>
 
-<span class="nf">do_something</span> <span class="ow">::</span> <span class="kt">Result</span> <span class="n">a</span>
+<span class="n">do_something</span> <span class="o">::</span> <span class="kt">Result</span> <span class="n">a</span>
 
-<span class="nf">main</span> <span class="ow">=</span> <span class="kr">let</span> <span class="n">res</span> <span class="ow">=</span> <span class="n">do_something</span> <span class="kr">in</span>
+<span class="n">main</span> <span class="o">=</span> <span class="kr">let</span> <span class="n">res</span> <span class="o">=</span> <span class="n">do_something</span> <span class="kr">in</span>
   <span class="kr">case</span> <span class="n">res</span> <span class="kr">of</span>
-    <span class="kt">Right</span> <span class="kr">_</span> <span class="ow">-&gt;</span> <span class="n">print</span> <span class="s">&quot;ok&quot;</span>
-    <span class="kt">Left</span> <span class="kt">ErrorA</span> <span class="ow">-&gt;</span> <span class="n">print</span> <span class="s">&quot;ErrorA&quot;</span>
-    <span class="kt">Left</span> <span class="kt">ErrorB</span> <span class="ow">-&gt;</span> <span class="n">print</span> <span class="s">&quot;ErrorB&quot;</span></code></pre></div>
+    <span class="kt">Right</span> <span class="kr">_</span> <span class="o">-&gt;</span> <span class="n">print</span> <span class="s">"ok"</span>
+    <span class="kt">Left</span> <span class="kt">ErrorA</span> <span class="o">-&gt;</span> <span class="n">print</span> <span class="s">"ErrorA"</span>
+    <span class="kt">Left</span> <span class="kt">ErrorB</span> <span class="o">-&gt;</span> <span class="n">print</span> <span class="s">"ErrorB"</span></code></pre></figure>
 
 <p>我们错误处理的需求是：当程序出错时，需要进入另外的执行流进行处理（可能要区分错误类型），这两段程序分别通过各自语言提供的特性，较为优雅的实现了这一点。
 这两段程序虽然运用特性不同，但实现的功能相同，体现了两种编程范式的殊途同归。</p>
@@ -211,22 +247,22 @@
     
       <p>根据下面的声明回答有关问题。</p>
 
-<div class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span> <span class="k">class</span> <span class="nc">Optional</span> <span class="p">{</span>
+<figure class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span> <span class="k">class</span> <span class="nc">Optional</span> <span class="p">{</span>
     <span class="k">public</span><span class="o">:</span>
-        <span class="c1">//invalid</span>
-        <span class="n">Optional</span><span class="p">()</span><span class="o">:</span><span class="n">valid</span><span class="p">(</span><span class="nb">false</span><span class="p">)</span> <span class="p">{}</span>
+        <span class="c1">//invalid
+</span>        <span class="n">Optional</span><span class="p">()</span><span class="o">:</span><span class="n">valid</span><span class="p">(</span><span class="nb">false</span><span class="p">)</span> <span class="p">{}</span>
 
-        <span class="c1">//valid value</span>
-        <span class="n">Optional</span><span class="p">(</span><span class="k">const</span> <span class="n">T</span> <span class="o">&amp;</span> <span class="n">value</span><span class="p">)</span><span class="o">:</span><span class="n">valid</span><span class="p">(</span><span class="nb">true</span><span class="p">),</span> <span class="n">content</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="p">{}</span>
+        <span class="c1">//valid value
+</span>        <span class="n">Optional</span><span class="p">(</span><span class="k">const</span> <span class="n">T</span> <span class="o">&amp;</span> <span class="n">value</span><span class="p">)</span><span class="o">:</span><span class="n">valid</span><span class="p">(</span><span class="nb">true</span><span class="p">),</span> <span class="n">content</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="p">{}</span>
 
-        <span class="k">operator</span> <span class="kt">bool</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">valid</span><span class="p">;</span> <span class="p">}</span>
+        <span class="k">operator</span> <span class="n">bool</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">valid</span><span class="p">;</span> <span class="p">}</span>
 
         <span class="k">const</span> <span class="n">T</span> <span class="o">&amp;</span> <span class="k">operator</span><span class="o">*</span><span class="p">();</span>
 <span class="p">};</span>
 
 <span class="n">Optional</span><span class="o">&lt;</span><span class="n">Value</span><span class="o">&gt;</span> <span class="n">get</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span> <span class="n">key</span><span class="p">);</span>
 
-<span class="kt">int</span> <span class="n">t</span> <span class="o">=</span> <span class="n">db</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">input</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">c_str</span><span class="p">());</span> <span class="c1">//为何可以通过编译？</span></code></pre></div>
+<span class="kt">int</span> <span class="n">t</span> <span class="o">=</span> <span class="n">db</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">input</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">c_str</span><span class="p">());</span> <span class="o">//</span><span class="err">为何可以通过编译？</span></code></pre></figure>
 
 
     
@@ -245,23 +281,6 @@
     
       <p>昨天，看了一些资料，感觉自己对 continuation 有了一些想法，感觉可以给之前的解释器加上，
 于是迫不及待的行动了起来。</p>
-
-
-    
-    </div>
-  </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/2015/05/24/RedBlackTree2/">
-        对红黑树的一种解释（删除篇）
-      </a>
-    </h1>
-
-    <span class="post-date">24 May 2015</span>
-    <div class="post-content-truncate">
-    
-      <p>(接上篇）</p>
 
 
     

@@ -86,7 +86,7 @@
   </div>
   <div class="sidebar-item">
     <p>
-      &copy; 2015. All rights reserved.
+      &copy; 2016. All rights reserved.
     </p>
   </div>
 </div>
@@ -110,7 +110,7 @@
   <span class="post-date">23 Dec 2015</span>
   <p>今天的 ics 习题课上有一道习题，题意大致如下：</p>
 
-<div class="highlight"><pre><code class="language-c" data-lang="c"><span class="cm">/* m1.c */</span>
+<figure class="highlight"><pre><code class="language-c" data-lang="c"><span class="cm">/* m1.c */</span>
 <span class="kt">int</span> <span class="nf">p</span><span class="p">()</span>
 <span class="p">{</span>
 <span class="p">}</span>
@@ -118,15 +118,15 @@
 <span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
 <span class="p">{</span>
     <span class="n">p</span><span class="p">();</span>
-<span class="p">}</span></code></pre></div>
+<span class="p">}</span></code></pre></figure>
 
-<div class="highlight"><pre><code class="language-c" data-lang="c"><span class="cm">/* m2.c */</span>
+<figure class="highlight"><pre><code class="language-c" data-lang="c"><span class="cm">/* m2.c */</span>
 <span class="kt">int</span> <span class="n">a</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">};</span>
 <span class="k">static</span> <span class="kt">int</span> <span class="n">p</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span>
 <span class="kt">int</span> <span class="nf">p2</span><span class="p">()</span>
 <span class="p">{</span>
     <span class="k">return</span> <span class="n">p</span><span class="p">;</span>
-<span class="p">}</span></code></pre></div>
+<span class="p">}</span></code></pre></figure>
 
 <p>首先问 m1 里的 p 引用的是哪个定义，这一问没有太大问题， m2 里 p 是 static 的，因而是 local 的，m1 里自然不会用。
 显然是用的 m1 里的 p 定义。</p>
@@ -134,13 +134,13 @@
 <p>不过第二问就比较费解，问 m2 里 p 引用的是哪个定义。讲道理的话，m2 里 p 既可能引用自己里面 static 的 p 的local 符号，也可能引用 m1 中的 global 强符号。
 所以，还是看看 gcc 的编译结果把。</p>
 
-<div class="highlight"><pre><code class="language-text" data-lang="text">00000000 &lt;p2&gt;:
+<figure class="highlight"><pre><code class="language-text" data-lang="text">00000000 &lt;p2&gt;:
    0:   55                      push   %ebp
    1:   89 e5                   mov    %esp,%ebp
    3:   a1 28 00 00 00          mov    0x28,%eax
             4: R_386_32 .data
    8:   5d                      pop    %ebp
-   9:   c3                      ret</code></pre></div>
+   9:   c3                      ret    </code></pre></figure>
 
 <p>结果是 relocation table 中的对应项的符号是 .data, 而不是 p. 所以问题是一个伪命题，linker 根本不需要解决 m2 里 p 的引用！
 仔细查看汇编代码我们发现，编译器是把改static 变量距 .data section 首的偏移放进去占位，这样链接时把 .data 段的实际地址加上就得到了正确地址。
@@ -151,6 +151,15 @@
 <div class="related">
   <h2>Related Posts</h2>
   <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2016/01/06/computability/">
+            可计算理论的一些思考
+            <small>06 Jan 2016</small>
+          </a>
+        </h3>
+      </li>
     
       <li>
         <h3>
@@ -166,15 +175,6 @@
           <a href="/2015/08/20/cpp-type-pitfall/">
             c++趣题一道
             <small>20 Aug 2015</small>
-          </a>
-        </h3>
-      </li>
-    
-      <li>
-        <h3>
-          <a href="/2015/06/09/continuation/">
-            一些乱搞的产物
-            <small>09 Jun 2015</small>
           </a>
         </h3>
       </li>

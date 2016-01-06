@@ -11,7 +11,7 @@
 
   <title>
     
-      对红黑树的一种解释（删除篇） &middot; codeworm96
+      可计算理论的一些思考 &middot; codeworm96
     
   </title>
 
@@ -106,60 +106,29 @@
 
       <div class="container content">
         <div class="post">
-  <h1 class="post-title">对红黑树的一种解释（删除篇）</h1>
-  <span class="post-date">24 May 2015</span>
-  <p>(接上篇）</p>
+  <h1 class="post-title">可计算理论的一些思考</h1>
+  <span class="post-date">06 Jan 2016</span>
+  ## 构造数据抽象
 
-<!-- more -->
+可计算理论中的一个重要的思想就是万物位数。我们涉及到的很多对象的集合都是 denumerable 的，都与自然数存在一一对应。
+同时我们也可以证明 pair, n-tuple, list 也都是 denumerable 的，这些在可计算理论中就起到了数据结构的作用。
 
-<h1>2-3-4树的删除（top-down）</h1>
+## 构造过程抽象
 
-<p>为了理解红黑树删除，我们还是先回到2-3-4树。</p>
+要研究计算，必须先要有可描述计算过程的计算模型。在这门课中有 URM， 图灵机， recursive function 三个主要的计算模型。
+其中 recursive fucntion 又是由 primitive recursive function 加上最小化操作升级而来。
+（引入最小化操作不仅带来了 partial function, 也带来了新的 total function 如 ackerman function）
+这些计算模型都由各自关于可定义性和可计算性的定义。但 Church-Turing-Thesis 使所有的计算模型得到了大一统。
+从此可计算理论进入了更为抽象的时代，不再限制与具体的计算模型。
 
-<p>(Note: 跟所有搜索树一样，我们总可以把删除化为删一个子树不满的节点）</p>
+S-M-N 定理的一个重要作用是通过其可以构造出以函数编码为参数生成函数编码的函数，不禁令人联想到 python 中的装饰器。而通用函数又令人想到 eval 函数。
 
-<p>我们发现对2-3-4树，删3-node，4-node都比较轻松愉快，而删2-node很麻烦。
-所以在top-down的过程中我们要尽量排除2-node.
-可分两种情况：</p>
+进一步深究下去，我们来到了计算能力的边界，我们证明出了 x in Wx 是不可解的！然而，我们并没有放弃治疗。转而研究它们的部分特征函数，至少它们是可以计算的。
+然而K的补不是 r.e. set ...
 
-<ol>
-<li><p>若相邻兄弟节点也为2-node，可以从父节点拉下来一个进行合并。</p></li>
-<li><p>若相邻兄弟节点不为2-node，可经由父节点借来一个。</p></li>
-</ol>
+CTT 是可计算模型中的大一统。自然数上的集合，自然数到自然数的函数，自然数上的谓词构成了可计算中另一个大一统。
 
-<p><img src="/public/upload/rbt/234delete.png" alt="234删除"></p>
-
-<h1>红黑树删除（top-down）</h1>
-
-<p>我们可以把上述方法迁移到红黑树。在2-3-4树中我们的不变式是当前节点不是2-node，而在红黑树中则为：</p>
-
-<ol>
-<li><p>当前节点cur 为红色</p></li>
-<li><p>cur.left/cur.right 至少有一为红色</p></li>
-</ol>
-
-<p>方法：</p>
-
-<ol>
-<li><p>若父节点为黑色可通过旋转化为父节点为红色情况
-<img src="/public/upload/rbt/trans.png" alt="转化"></p></li>
-<li><p>若兄弟节点为2-node 则可合并
-<img src="/public/upload/rbt/merge.png" alt="合并"></p></li>
-<li><p>若兄弟节点不为2-node 则通过父节点借
-<img src="/public/upload/rbt/borrow.png" alt="借"></p></li>
-</ol>
-
-<p>当然开始时也要能满足不变式，若不满足，则可直接把父节点变红，最后要把父节点恢复黑色。
-<img src="/public/upload/rbt/root.png" alt="根的情况"></p>
-
-<p>这就是红黑树的 top-down 删除的方法。</p>
-
-<p>[Update:2015/5/31
-删除樊腿同样也给出了解决方案，不过较之插入，稍显混乱，考虑到本文以红黑树理解为主线，
-在此不做展开，有兴趣的读者可以参考 <a href="http://user.qzone.qq.com/3101371795/blog/1432878594" target="_blank">樊腿巨作 基于3+4统一重构和统一重染色操作的红黑树归约实现</a>
-]</p>
-
-<p>Happy Hacking!</p>
+归约是可计算理论中的一大利器，问题并不是孤立的，而是存在于一个 distributive lattice 中。通过归约往往可以通过已有的结论轻松解决新的问题。
 
 </div>
 
@@ -197,7 +166,7 @@
   </ul>
 </div>
 <!-- 多说评论框 start -->
-<div class="ds-thread" data-thread-key="/2015/05/24/RedBlackTree2" data-title="对红黑树的一种解释（删除篇）" data-url="http://codeworm96.github.io//2015/05/24/RedBlackTree2/"></div>
+<div class="ds-thread" data-thread-key="/2016/01/06/computability.md" data-title="可计算理论的一些思考" data-url="http://codeworm96.github.io//2016/01/06/computability.md/"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
