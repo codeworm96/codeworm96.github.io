@@ -110,54 +110,63 @@
   <span class="post-date">17 Feb 2015</span>
   <p>在搞 IO 时，曾听大神介绍主席树/函数式线段树/可持久化线段树，当时对要修改时另外开点不是很习惯，不过现在已经很自然了。</p>
 
-<figure class="highlight"><pre><code class="language-racket" data-lang="racket"><span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">make-tree</span> <span class="nv">entry</span> <span class="nv">lchild</span> <span class="nv">rchild</span><span class="p">)</span>
-  <span class="p">(</span><span class="nb">list</span> <span class="nv">entry</span> <span class="nv">lchild</span> <span class="nv">rchild</span><span class="p">))</span>
-<span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">entry</span> <span class="nv">tree</span><span class="p">)</span>
-  <span class="p">(</span><span class="nb">car</span> <span class="nv">tree</span><span class="p">))</span>
-<span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">lchild</span> <span class="nv">tree</span><span class="p">)</span>
-  <span class="p">(</span><span class="nb">cadr</span> <span class="nv">tree</span><span class="p">))</span>
-<span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">rchild</span> <span class="nv">tree</span><span class="p">)</span>
-  <span class="p">(</span><span class="nb">caddr</span> <span class="nv">tree</span><span class="p">))</span>
+<figure class="highlight"><pre><code class="language-racket" data-lang="racket"><span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="n">make-tree</span> <span class="n">entry</span> <span class="n">lchild</span> <span class="n">rchild</span><span class="p">)</span>
+  <span class="p">(</span><span class="nb">list</span> <span class="n">entry</span> <span class="n">lchild</span> <span class="n">rchild</span><span class="p">))</span>
+<span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="n">entry</span> <span class="n">tree</span><span class="p">)</span>
+  <span class="p">(</span><span class="nb">car</span> <span class="n">tree</span><span class="p">))</span>
+<span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="n">lchild</span> <span class="n">tree</span><span class="p">)</span>
+  <span class="p">(</span><span class="nb">cadr</span> <span class="n">tree</span><span class="p">))</span>
+<span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="n">rchild</span> <span class="n">tree</span><span class="p">)</span>
+  <span class="p">(</span><span class="nb">caddr</span> <span class="n">tree</span><span class="p">))</span>
 
-<span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">insert</span> <span class="nv">x</span> <span class="nv">tree</span><span class="p">)</span>
+<span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="n">insert</span> <span class="n">x</span> <span class="n">tree</span><span class="p">)</span>
   <span class="p">(</span><span class="k">cond</span>
-    <span class="p">((</span><span class="nb">null?</span> <span class="nv">tree</span><span class="p">)</span> <span class="p">(</span><span class="nf">make-tree</span> <span class="nv">x</span> <span class="o">'</span><span class="p">()</span> <span class="o">'</span><span class="p">()))</span>
-    <span class="p">((</span><span class="nb">&gt;</span> <span class="nv">x</span> <span class="p">(</span><span class="nf">entry</span> <span class="nv">tree</span><span class="p">))</span> <span class="p">(</span><span class="nf">make-tree</span> <span class="p">(</span><span class="nf">entry</span> <span class="nv">tree</span><span class="p">)</span> <span class="p">(</span><span class="nf">lchild</span> <span class="nv">tree</span><span class="p">)</span> <span class="p">(</span><span class="nf">insert</span> <span class="nv">x</span> <span class="p">(</span><span class="nf">rchild</span> <span class="nv">tree</span><span class="p">))))</span>
-    <span class="p">((</span><span class="nb">&lt;</span> <span class="nv">x</span> <span class="p">(</span><span class="nf">entry</span> <span class="nv">tree</span><span class="p">))</span> <span class="p">(</span><span class="nf">make-tree</span> <span class="p">(</span><span class="nf">entry</span> <span class="nv">tree</span><span class="p">)</span> <span class="p">(</span><span class="nf">insert</span> <span class="nv">x</span> <span class="p">(</span><span class="nf">lchild</span> <span class="nv">tree</span><span class="p">))</span> <span class="p">(</span><span class="nf">rchild</span> <span class="nv">tree</span><span class="p">)))</span>
-    <span class="p">(</span><span class="nf">else</span> <span class="nv">tree</span><span class="p">)))</span>
+    <span class="p">((</span><span class="nb">null?</span> <span class="n">tree</span><span class="p">)</span> <span class="p">(</span><span class="n">make-tree</span> <span class="n">x</span> <span class="o">&#39;</span><span class="p">()</span> <span class="o">&#39;</span><span class="p">()))</span>
+    <span class="p">((</span><span class="nb">&gt;</span> <span class="n">x</span> <span class="p">(</span><span class="n">entry</span> <span class="n">tree</span><span class="p">))</span> <span class="p">(</span><span class="n">make-tree</span> <span class="p">(</span><span class="n">entry</span> <span class="n">tree</span><span class="p">)</span> <span class="p">(</span><span class="n">lchild</span> <span class="n">tree</span><span class="p">)</span> <span class="p">(</span><span class="n">insert</span> <span class="n">x</span> <span class="p">(</span><span class="n">rchild</span> <span class="n">tree</span><span class="p">))))</span>
+    <span class="p">((</span><span class="nb">&lt;</span> <span class="n">x</span> <span class="p">(</span><span class="n">entry</span> <span class="n">tree</span><span class="p">))</span> <span class="p">(</span><span class="n">make-tree</span> <span class="p">(</span><span class="n">entry</span> <span class="n">tree</span><span class="p">)</span> <span class="p">(</span><span class="n">insert</span> <span class="n">x</span> <span class="p">(</span><span class="n">lchild</span> <span class="n">tree</span><span class="p">))</span> <span class="p">(</span><span class="n">rchild</span> <span class="n">tree</span><span class="p">)))</span>
+    <span class="p">(</span><span class="k">else</span> <span class="n">tree</span><span class="p">)))</span>
 
 
 <span class="c1">;;拍扁</span>
-<span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">flatten</span> <span class="nv">tree</span><span class="p">)</span>
-  <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">flat</span> <span class="nv">tree</span> <span class="nv">res</span><span class="p">)</span>
-    <span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="nb">null?</span> <span class="nv">tree</span><span class="p">)</span>
-        <span class="nv">res</span>
-        <span class="p">(</span><span class="nf">flat</span> <span class="p">(</span><span class="nf">lchild</span> <span class="nv">tree</span><span class="p">)</span>
-              <span class="p">(</span><span class="nb">cons</span> <span class="p">(</span><span class="nf">entry</span> <span class="nv">tree</span><span class="p">)</span> <span class="p">(</span><span class="nf">flat</span> <span class="p">(</span><span class="nf">rchild</span> <span class="nv">tree</span><span class="p">)</span>
-                                       <span class="nv">res</span><span class="p">)))))</span>
-  <span class="p">(</span><span class="nf">flat</span> <span class="nv">tree</span> <span class="o">'</span><span class="p">()))</span>
+<span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nb">flatten</span> <span class="n">tree</span><span class="p">)</span>
+  <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="n">flat</span> <span class="n">tree</span> <span class="n">res</span><span class="p">)</span>
+    <span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="nb">null?</span> <span class="n">tree</span><span class="p">)</span>
+        <span class="n">res</span>
+        <span class="p">(</span><span class="n">flat</span> <span class="p">(</span><span class="n">lchild</span> <span class="n">tree</span><span class="p">)</span>
+              <span class="p">(</span><span class="nb">cons</span> <span class="p">(</span><span class="n">entry</span> <span class="n">tree</span><span class="p">)</span> <span class="p">(</span><span class="n">flat</span> <span class="p">(</span><span class="n">rchild</span> <span class="n">tree</span><span class="p">)</span>
+                                       <span class="n">res</span><span class="p">)))))</span>
+  <span class="p">(</span><span class="n">flat</span> <span class="n">tree</span> <span class="o">&#39;</span><span class="p">()))</span>
 
 <span class="c1">;;重建</span>
-<span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">build</span> <span class="nv">list</span><span class="p">)</span>
-  <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">part-build</span> <span class="nv">len</span> <span class="nv">list</span><span class="p">)</span>
-    <span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="nb">=</span> <span class="mi">0</span> <span class="nv">len</span><span class="p">)</span>
-        <span class="p">(</span><span class="nb">cons</span> <span class="o">'</span><span class="p">()</span> <span class="nv">list</span><span class="p">)</span>
-        <span class="p">(</span><span class="k">let</span> <span class="p">((</span><span class="nf">llen</span> <span class="p">(</span><span class="nb">quotient</span> <span class="nv">len</span> <span class="mi">2</span><span class="p">)))</span>
-          <span class="p">(</span><span class="k">let</span> <span class="p">((</span><span class="nf">lres</span> <span class="p">(</span><span class="nf">part-build</span> <span class="nv">llen</span> <span class="nv">list</span><span class="p">)))</span>
-            <span class="p">(</span><span class="k">let</span> <span class="p">((</span><span class="nf">lc</span> <span class="p">(</span><span class="nb">car</span> <span class="nv">lres</span><span class="p">))</span>
-                  <span class="p">(</span><span class="nf">rlist</span> <span class="p">(</span><span class="nb">cdr</span> <span class="nv">lres</span><span class="p">)))</span>
-              <span class="p">(</span><span class="k">let</span> <span class="p">((</span><span class="nf">this</span> <span class="p">(</span><span class="nb">car</span> <span class="nv">rlist</span><span class="p">))</span>
-                    <span class="p">(</span><span class="nf">rres</span> <span class="p">(</span><span class="nf">part-build</span> <span class="p">(</span><span class="nb">-</span> <span class="nv">len</span> <span class="p">(</span><span class="nb">+</span> <span class="nv">llen</span> <span class="mi">1</span><span class="p">))</span> <span class="p">(</span><span class="nb">cdr</span> <span class="nv">rlist</span><span class="p">))))</span>
-                <span class="p">(</span><span class="k">let</span> <span class="p">((</span><span class="nf">rc</span> <span class="p">(</span><span class="nb">car</span> <span class="nv">rres</span><span class="p">))</span>
-                      <span class="p">(</span><span class="nf">left</span> <span class="p">(</span><span class="nb">cdr</span> <span class="nv">rres</span><span class="p">)))</span>
-                  <span class="p">(</span><span class="nb">cons</span> <span class="p">(</span><span class="nf">make-tree</span> <span class="nv">this</span> <span class="nv">lc</span> <span class="nv">rc</span><span class="p">)</span> <span class="nv">left</span><span class="p">))))))))</span>
-  <span class="p">(</span><span class="nb">car</span> <span class="p">(</span><span class="nf">part-build</span> <span class="p">(</span><span class="nb">length</span> <span class="nv">list</span><span class="p">)</span> <span class="nv">list</span><span class="p">)))</span></code></pre></figure>
+<span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="n">build</span> <span class="nb">list</span><span class="p">)</span>
+  <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="n">part-build</span> <span class="n">len</span> <span class="nb">list</span><span class="p">)</span>
+    <span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="nb">=</span> <span class="mi">0</span> <span class="n">len</span><span class="p">)</span>
+        <span class="p">(</span><span class="nb">cons</span> <span class="o">&#39;</span><span class="p">()</span> <span class="nb">list</span><span class="p">)</span>
+        <span class="p">(</span><span class="k">let</span> <span class="p">((</span><span class="n">llen</span> <span class="p">(</span><span class="nb">quotient</span> <span class="n">len</span> <span class="mi">2</span><span class="p">)))</span>
+          <span class="p">(</span><span class="k">let</span> <span class="p">((</span><span class="n">lres</span> <span class="p">(</span><span class="n">part-build</span> <span class="n">llen</span> <span class="nb">list</span><span class="p">)))</span>
+            <span class="p">(</span><span class="k">let</span> <span class="p">((</span><span class="n">lc</span> <span class="p">(</span><span class="nb">car</span> <span class="n">lres</span><span class="p">))</span>
+                  <span class="p">(</span><span class="n">rlist</span> <span class="p">(</span><span class="nb">cdr</span> <span class="n">lres</span><span class="p">)))</span>
+              <span class="p">(</span><span class="k">let</span> <span class="p">((</span><span class="k">this</span> <span class="p">(</span><span class="nb">car</span> <span class="n">rlist</span><span class="p">))</span>
+                    <span class="p">(</span><span class="n">rres</span> <span class="p">(</span><span class="n">part-build</span> <span class="p">(</span><span class="nb">-</span> <span class="n">len</span> <span class="p">(</span><span class="nb">+</span> <span class="n">llen</span> <span class="mi">1</span><span class="p">))</span> <span class="p">(</span><span class="nb">cdr</span> <span class="n">rlist</span><span class="p">))))</span>
+                <span class="p">(</span><span class="k">let</span> <span class="p">((</span><span class="n">rc</span> <span class="p">(</span><span class="nb">car</span> <span class="n">rres</span><span class="p">))</span>
+                      <span class="p">(</span><span class="n">left</span> <span class="p">(</span><span class="nb">cdr</span> <span class="n">rres</span><span class="p">)))</span>
+                  <span class="p">(</span><span class="nb">cons</span> <span class="p">(</span><span class="n">make-tree</span> <span class="k">this</span> <span class="n">lc</span> <span class="n">rc</span><span class="p">)</span> <span class="n">left</span><span class="p">))))))))</span>
+  <span class="p">(</span><span class="nb">car</span> <span class="p">(</span><span class="n">part-build</span> <span class="p">(</span><span class="nb">length</span> <span class="nb">list</span><span class="p">)</span> <span class="nb">list</span><span class="p">)))</span></code></pre></figure>
 
 </div>
 
 <div class="related">
   <h2>Related Posts</h2>
   <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2016/02/24/queckcheck/">
+            Notes on QuickCheck
+            <small>24 Feb 2016</small>
+          </a>
+        </h3>
+      </li>
     
       <li>
         <h3>
@@ -173,15 +182,6 @@
           <a href="/2015/12/23/linking-static-variable/">
             static 与链接
             <small>23 Dec 2015</small>
-          </a>
-        </h3>
-      </li>
-    
-      <li>
-        <h3>
-          <a href="/2015/10/22/either-monad-and-exception/">
-            Either 与异常处理的联系
-            <small>22 Oct 2015</small>
           </a>
         </h3>
       </li>

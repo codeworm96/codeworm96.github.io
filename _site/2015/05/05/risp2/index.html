@@ -123,16 +123,16 @@ Parser 中的运用，为了加深理解，就在 ruby 里把这套抽象搞了�
   <span class="k">end</span>
 
   <span class="c1">#usage</span>
-  <span class="no">Parser_fail</span> <span class="o">=</span> <span class="no">Parser</span><span class="p">.</span><span class="nf">new</span> <span class="p">{</span> <span class="o">|</span><span class="n">s</span><span class="o">|</span> <span class="kp">nil</span> <span class="p">}</span></code></pre></figure>
+  <span class="no">Parser_fail</span> <span class="o">=</span> <span class="no">Parser</span><span class="o">.</span><span class="n">new</span> <span class="p">{</span> <span class="o">|</span><span class="n">s</span><span class="o">|</span> <span class="kp">nil</span> <span class="p">}</span></code></pre></figure>
 
 <p>2.choose (+++) 的设计还不错，实现了连续使用。</p>
 
 <figure class="highlight"><pre><code class="language-ruby" data-lang="ruby">  <span class="c1">#define</span>
   <span class="k">def</span> <span class="nf">choose</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
-    <span class="no">Parser</span><span class="p">.</span><span class="nf">new</span> <span class="p">{</span> <span class="o">|</span><span class="n">s</span><span class="o">|</span>
+    <span class="no">Parser</span><span class="o">.</span><span class="n">new</span> <span class="p">{</span> <span class="o">|</span><span class="n">s</span><span class="o">|</span>
       <span class="n">res</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
-      <span class="k">if</span> <span class="n">res</span><span class="p">.</span><span class="nf">nil?</span>
-        <span class="n">other</span><span class="p">.</span><span class="nf">parse</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+      <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">nil?</span>
+        <span class="n">other</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
       <span class="k">else</span>
         <span class="n">res</span>
       <span class="k">end</span>
@@ -140,27 +140,27 @@ Parser 中的运用，为了加深理解，就在 ruby 里把这套抽象搞了�
   <span class="k">end</span>
 
   <span class="c1">#usage</span>
-  <span class="n">many1</span><span class="p">(</span><span class="n">parser</span><span class="p">).</span><span class="nf">choose</span><span class="p">(</span><span class="no">Parser</span><span class="p">.</span><span class="nf">return</span><span class="p">([]))</span></code></pre></figure>
+  <span class="n">many1</span><span class="p">(</span><span class="n">parser</span><span class="p">)</span><span class="o">.</span><span class="n">choose</span><span class="p">(</span><span class="no">Parser</span><span class="o">.</span><span class="n">return</span><span class="p">(</span><span class="o">[]</span><span class="p">))</span></code></pre></figure>
 
 <p>3.bind (&gt;&gt;=) 的设计就很差了，为了用之前的结果要用嵌套 block ，或许是没有 do-notation 的缘故？</p>
 
 <figure class="highlight"><pre><code class="language-ruby" data-lang="ruby">  <span class="c1">#define</span>
   <span class="k">def</span> <span class="nf">bind</span><span class="p">(</span><span class="o">&amp;</span><span class="n">other</span><span class="p">)</span>
-    <span class="no">Parser</span><span class="p">.</span><span class="nf">new</span> <span class="p">{</span> <span class="o">|</span><span class="n">s</span><span class="o">|</span>
+    <span class="no">Parser</span><span class="o">.</span><span class="n">new</span> <span class="p">{</span> <span class="o">|</span><span class="n">s</span><span class="o">|</span>
       <span class="n">res</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
-      <span class="k">if</span> <span class="n">res</span><span class="p">.</span><span class="nf">nil?</span>
+      <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">nil?</span>
         <span class="n">res</span>
       <span class="k">else</span>
-        <span class="n">other</span><span class="p">[</span><span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]].</span><span class="nf">parse</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">other</span><span class="o">[</span><span class="n">res</span><span class="o">[</span><span class="mi">0</span><span class="o">]].</span><span class="n">parse</span><span class="p">(</span><span class="n">res</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="p">)</span>
       <span class="k">end</span>
     <span class="p">}</span>
   <span class="k">end</span>
 
   <span class="c1">#usage</span>
-  <span class="no">Parser_leftp</span> <span class="o">=</span> <span class="no">Parser_whitespace</span><span class="p">.</span><span class="nf">bind</span> <span class="p">{</span> <span class="o">|</span><span class="n">res1</span><span class="o">|</span>
-    <span class="n">parser_sat</span> <span class="p">{</span> <span class="o">|</span><span class="n">c</span><span class="o">|</span> <span class="n">c</span> <span class="o">==</span> <span class="s1">'('</span> <span class="p">}.</span><span class="nf">bind</span><span class="p">{</span> <span class="o">|</span><span class="n">res</span><span class="o">|</span>
-      <span class="no">Parser_whitespace</span><span class="p">.</span><span class="nf">bind</span> <span class="p">{</span> <span class="o">|</span><span class="n">res3</span><span class="o">|</span>
-        <span class="no">Parser</span><span class="p">.</span><span class="nf">return</span> <span class="n">res</span>
+  <span class="no">Parser_leftp</span> <span class="o">=</span> <span class="no">Parser_whitespace</span><span class="o">.</span><span class="n">bind</span> <span class="p">{</span> <span class="o">|</span><span class="n">res1</span><span class="o">|</span>
+    <span class="n">parser_sat</span> <span class="p">{</span> <span class="o">|</span><span class="n">c</span><span class="o">|</span> <span class="n">c</span> <span class="o">==</span> <span class="s1">&#39;(&#39;</span> <span class="p">}</span><span class="o">.</span><span class="n">bind</span><span class="p">{</span> <span class="o">|</span><span class="n">res</span><span class="o">|</span>
+      <span class="no">Parser_whitespace</span><span class="o">.</span><span class="n">bind</span> <span class="p">{</span> <span class="o">|</span><span class="n">res3</span><span class="o">|</span>
+        <span class="no">Parser</span><span class="o">.</span><span class="n">return</span> <span class="n">res</span>
       <span class="p">}</span>
     <span class="p">}</span>
   <span class="p">}</span></code></pre></figure>
@@ -179,6 +179,15 @@ Parser 中的运用，为了加深理解，就在 ruby 里把这套抽象搞了�
     
       <li>
         <h3>
+          <a href="/2016/02/24/queckcheck/">
+            Notes on QuickCheck
+            <small>24 Feb 2016</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
           <a href="/2016/01/06/computability/">
             可计算理论的一些思考
             <small>06 Jan 2016</small>
@@ -191,15 +200,6 @@ Parser 中的运用，为了加深理解，就在 ruby 里把这套抽象搞了�
           <a href="/2015/12/23/linking-static-variable/">
             static 与链接
             <small>23 Dec 2015</small>
-          </a>
-        </h3>
-      </li>
-    
-      <li>
-        <h3>
-          <a href="/2015/10/22/either-monad-and-exception/">
-            Either 与异常处理的联系
-            <small>22 Oct 2015</small>
           </a>
         </h3>
       </li>

@@ -11,7 +11,7 @@
 
   <title>
     
-      Either 与异常处理的联系 &middot; codeworm96
+      Notes on QuickCheck &middot; codeworm96
     
   </title>
 
@@ -106,48 +106,54 @@
 
       <div class="container content">
         <div class="post">
-  <h1 class="post-title">Either 与异常处理的联系</h1>
-  <span class="post-date">22 Oct 2015</span>
-  <p>在程序设计中，我们不可避免的会遇到错误的处理，在支持异常的语言中，我们会用异常来实现。如：</p>
+  <h1 class="post-title">Notes on QuickCheck</h1>
+  <span class="post-date">24 Feb 2016</span>
+  <p>QuickCheck is a testing library for Haskell, which is very interesting and convinent.
+Unlike normal testing library, in which we run our code against some given input
+and check if the result is expected, QuickCheck allows us to define <code>properties</code>
+for our functions, and check them using randomly generated inputs.</p>
 
-<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">try</span><span class="p">:</span>
-    <span class="n">do_something</span>
-<span class="k">except</span> <span class="n">ErrorA</span><span class="p">:</span>
-    <span class="o">...</span>
-<span class="k">except</span> <span class="n">ErrorB</span><span class="p">:</span>
-    <span class="o">...</span></code></pre></figure>
+<h1>Install</h1>
+<div class="highlight"><pre><code class="language-text" data-lang="text">cabal install quickcheck
+</code></pre></div>
+<h1>Usage</h1>
 
-<p>在函数式的语言中，我们会用 Either 对程序正常和错误的结果进行抽象。上段程序就转化为：</p>
+<p>import it first:</p>
 
-<figure class="highlight"><pre><code class="language-haskell" data-lang="haskell"><span class="kr">data</span> <span class="kt">Error</span> <span class="ow">=</span> <span class="kt">ErrorA</span> <span class="o">|</span> <span class="kt">ErrorB</span>
+<figure class="highlight"><pre><code class="language-haskell" data-lang="haskell"><span class="kr">import</span> <span class="nn">Test.QuickCheck</span></code></pre></figure>
 
-<span class="kr">type</span> <span class="kt">Result</span> <span class="n">a</span> <span class="ow">=</span> <span class="kt">Either</span> <span class="kt">Error</span> <span class="n">a</span>
+<p>define properties:</p>
 
-<span class="nf">do_something</span> <span class="ow">::</span> <span class="kt">Result</span> <span class="n">a</span>
+<figure class="highlight"><pre><code class="language-haskell" data-lang="haskell"><span class="c1">-- simple property</span>
+<span class="nf">prop_reverseConcat</span> <span class="n">xs</span> <span class="n">ys</span> <span class="ow">=</span> <span class="n">reverse</span> <span class="p">(</span><span class="n">xs</span> <span class="o">++</span> <span class="n">ys</span><span class="p">)</span> <span class="o">==</span> <span class="n">reverse</span> <span class="n">ys</span> <span class="o">++</span> <span class="n">reverse</span> <span class="n">xs</span>
 
-<span class="nf">main</span> <span class="ow">=</span> <span class="kr">let</span> <span class="n">res</span> <span class="ow">=</span> <span class="n">do_something</span> <span class="kr">in</span>
-  <span class="kr">case</span> <span class="n">res</span> <span class="kr">of</span>
-    <span class="kt">Right</span> <span class="kr">_</span> <span class="ow">-&gt;</span> <span class="n">print</span> <span class="s">&quot;ok&quot;</span>
-    <span class="kt">Left</span> <span class="kt">ErrorA</span> <span class="ow">-&gt;</span> <span class="n">print</span> <span class="s">&quot;ErrorA&quot;</span>
-    <span class="kt">Left</span> <span class="kt">ErrorB</span> <span class="ow">-&gt;</span> <span class="n">print</span> <span class="s">&quot;ErrorB&quot;</span></code></pre></figure>
+<span class="c1">-- (==&gt;) implies - add condition for inputs</span>
+<span class="nf">prop_headMin</span> <span class="n">xs</span> <span class="ow">=</span> <span class="n">not</span> <span class="p">(</span><span class="n">null</span> <span class="n">xs</span><span class="p">)</span> <span class="o">==&gt;</span> <span class="n">head</span> <span class="p">(</span><span class="n">sort</span> <span class="n">xs</span><span class="p">)</span> <span class="o">==</span> <span class="n">minimum</span> <span class="n">xs</span></code></pre></figure>
 
-<p>我们错误处理的需求是：当程序出错时，需要进入另外的执行流进行处理（可能要区分错误类型），这两段程序分别通过各自语言提供的特性，较为优雅的实现了这一点。
-这两段程序虽然运用特性不同，但实现的功能相同，体现了两种编程范式的殊途同归。</p>
+<p>testing properties:</p>
+
+<figure class="highlight"><pre><code class="language-haskell" data-lang="haskell"><span class="nf">quickCheck</span> <span class="n">prop</span>
+
+<span class="c1">-- more details</span>
+<span class="nf">verboseCheck</span> <span class="n">prop</span>
+
+<span class="c1">-- specifying a type</span>
+<span class="nf">quickCheck</span> <span class="p">(</span><span class="n">prop</span> <span class="ow">::</span> <span class="kt">SomeType</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span><span class="p">)</span></code></pre></figure>
+
+<h1>Not Perfect</h1>
+
+<p>We have to notice that passing QuickCheck doesn&#39;t mean there isn&#39;t
+any bug in our code. In fact, we can prove that no one can devise
+a program which can verify, for any program, whether it behaves
+as desired.(let \phi(x) = character function for some property,
+the verify problem is equivalent to 1 - \phi(x) = 0(zero function),
+which, according to computability theory is not decidable.)</p>
 
 </div>
 
 <div class="related">
   <h2>Related Posts</h2>
   <ul class="related-posts">
-    
-      <li>
-        <h3>
-          <a href="/2016/02/24/queckcheck/">
-            Notes on QuickCheck
-            <small>24 Feb 2016</small>
-          </a>
-        </h3>
-      </li>
     
       <li>
         <h3>
@@ -167,10 +173,19 @@
         </h3>
       </li>
     
+      <li>
+        <h3>
+          <a href="/2015/10/22/either-monad-and-exception/">
+            Either 与异常处理的联系
+            <small>22 Oct 2015</small>
+          </a>
+        </h3>
+      </li>
+    
   </ul>
 </div>
 <!-- 多说评论框 start -->
-<div class="ds-thread" data-thread-key="/2015/10/22/either-monad-and-exception" data-title="Either 与异常处理的联系" data-url="http://codeworm96.github.io//2015/10/22/either-monad-and-exception/"></div>
+<div class="ds-thread" data-thread-key="/2016/02/24/queckcheck" data-title="Notes on QuickCheck" data-url="http://codeworm96.github.io//2016/02/24/queckcheck/"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">

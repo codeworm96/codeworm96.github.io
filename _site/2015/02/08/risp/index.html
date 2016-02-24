@@ -138,9 +138,9 @@ zero?, add1, sub1, number?<br />
 
 <p>lambda 是创建一个函数，显然参数列表和函数体要被记录，但并不是全部。</p>
 
-<figure class="highlight"><pre><code class="language-lisp" data-lang="lisp">(define add1 ((lambda (a)
-                      (lambda (x)
-                              (+ x a))) 1))</code></pre></figure>
+<figure class="highlight"><pre><code class="language-lisp" data-lang="lisp"><span class="p">(</span><span class="nv">define</span> <span class="nv">add1</span> <span class="p">((</span><span class="k">lambda</span> <span class="p">(</span><span class="nv">a</span><span class="p">)</span>
+                      <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nv">x</span><span class="p">)</span>
+                              <span class="p">(</span><span class="nb">+</span> <span class="nv">x</span> <span class="nv">a</span><span class="p">)))</span> <span class="mi">1</span><span class="p">))</span></code></pre></figure>
 
 <p>观察上述代码，我们可以看到，为了让 add1 被调用时 a 能找到对应的值，我们还应记录函数创建时的环境。</p>
 
@@ -148,11 +148,11 @@ zero?, add1, sub1, number?<br />
 
 <p>define 我觉得是最难的一部分。</p>
 
-<figure class="highlight"><pre><code class="language-lisp" data-lang="lisp">(define length
-  (lambda (l)
-    (cond
-      ((null? l) 0)
-      (else (+ 1 (length (cdr l)))))))</code></pre></figure>
+<figure class="highlight"><pre><code class="language-lisp" data-lang="lisp"><span class="p">(</span><span class="nv">define</span> <span class="nb">length</span>
+  <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nv">l</span><span class="p">)</span>
+    <span class="p">(</span><span class="nb">cond</span>
+      <span class="p">((</span><span class="nv">null?</span> <span class="nv">l</span><span class="p">)</span> <span class="mi">0</span><span class="p">)</span>
+      <span class="p">(</span><span class="nv">else</span> <span class="p">(</span><span class="nb">+</span> <span class="mi">1</span> <span class="p">(</span><span class="nb">length</span> <span class="p">(</span><span class="nb">cdr</span> <span class="nv">l</span><span class="p">)))))))</span></code></pre></figure>
 
 <p>这里的 length 是递归函数，当函数创建时环境中并没有 length 的定义，于是函数便不能正常调用，虽然可以通过 Y-combinator 绕开这个问题，但又导致了define 对递归函数的行为与其他不一致。</p>
 
@@ -175,6 +175,15 @@ define 会在环境中加入 length 的定义，length 便可正常调用了。<
     
       <li>
         <h3>
+          <a href="/2016/02/24/queckcheck/">
+            Notes on QuickCheck
+            <small>24 Feb 2016</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
           <a href="/2016/01/06/computability/">
             可计算理论的一些思考
             <small>06 Jan 2016</small>
@@ -187,15 +196,6 @@ define 会在环境中加入 length 的定义，length 便可正常调用了。<
           <a href="/2015/12/23/linking-static-variable/">
             static 与链接
             <small>23 Dec 2015</small>
-          </a>
-        </h3>
-      </li>
-    
-      <li>
-        <h3>
-          <a href="/2015/10/22/either-monad-and-exception/">
-            Either 与异常处理的联系
-            <small>22 Oct 2015</small>
           </a>
         </h3>
       </li>

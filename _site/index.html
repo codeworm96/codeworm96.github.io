@@ -109,6 +109,61 @@
   
   <div class="post">
     <h1 class="post-title">
+      <a href="/2016/02/24/queckcheck/">
+        Notes on QuickCheck
+      </a>
+    </h1>
+
+    <span class="post-date">24 Feb 2016</span>
+    <div class="post-content-truncate">
+    
+      <p>QuickCheck is a testing library for Haskell, which is very interesting and convinent.
+Unlike normal testing library, in which we run our code against some given input
+and check if the result is expected, QuickCheck allows us to define <code>properties</code>
+for our functions, and check them using randomly generated inputs.</p>
+
+<h1>Install</h1>
+<div class="highlight"><pre><code class="language-text" data-lang="text">cabal install quickcheck
+</code></pre></div>
+<h1>Usage</h1>
+
+<p>import it first:</p>
+
+<figure class="highlight"><pre><code class="language-haskell" data-lang="haskell"><span class="kr">import</span> <span class="nn">Test.QuickCheck</span></code></pre></figure>
+
+<p>define properties:</p>
+
+<figure class="highlight"><pre><code class="language-haskell" data-lang="haskell"><span class="c1">-- simple property</span>
+<span class="nf">prop_reverseConcat</span> <span class="n">xs</span> <span class="n">ys</span> <span class="ow">=</span> <span class="n">reverse</span> <span class="p">(</span><span class="n">xs</span> <span class="o">++</span> <span class="n">ys</span><span class="p">)</span> <span class="o">==</span> <span class="n">reverse</span> <span class="n">ys</span> <span class="o">++</span> <span class="n">reverse</span> <span class="n">xs</span>
+
+<span class="c1">-- (==&gt;) implies - add condition for inputs</span>
+<span class="nf">prop_headMin</span> <span class="n">xs</span> <span class="ow">=</span> <span class="n">not</span> <span class="p">(</span><span class="n">null</span> <span class="n">xs</span><span class="p">)</span> <span class="o">==&gt;</span> <span class="n">head</span> <span class="p">(</span><span class="n">sort</span> <span class="n">xs</span><span class="p">)</span> <span class="o">==</span> <span class="n">minimum</span> <span class="n">xs</span></code></pre></figure>
+
+<p>testing properties:</p>
+
+<figure class="highlight"><pre><code class="language-haskell" data-lang="haskell"><span class="nf">quickCheck</span> <span class="n">prop</span>
+
+<span class="c1">-- more details</span>
+<span class="nf">verboseCheck</span> <span class="n">prop</span>
+
+<span class="c1">-- specifying a type</span>
+<span class="nf">quickCheck</span> <span class="p">(</span><span class="n">prop</span> <span class="ow">::</span> <span class="kt">SomeType</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span><span class="p">)</span></code></pre></figure>
+
+<h1>Not Perfect</h1>
+
+<p>We have to notice that passing QuickCheck doesn&#39;t mean there isn&#39;t
+any bug in our code. In fact, we can prove that no one can devise
+a program which can verify, for any program, whether it behaves
+as desired.(let \phi(x) = character function for some property,
+the verify problem is equivalent to 1 - \phi(x) = 0(zero function),
+which, according to computability theory is not decidable.)</p>
+
+    
+    </div>
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
       <a href="/2016/01/06/computability/">
         可计算理论的一些思考
       </a>
@@ -216,17 +271,17 @@
 
 <p>在函数式的语言中，我们会用 Either 对程序正常和错误的结果进行抽象。上段程序就转化为：</p>
 
-<figure class="highlight"><pre><code class="language-haskell" data-lang="haskell"><span class="kr">data</span> <span class="kt">Error</span> <span class="o">=</span> <span class="kt">ErrorA</span> <span class="o">|</span> <span class="kt">ErrorB</span>
+<figure class="highlight"><pre><code class="language-haskell" data-lang="haskell"><span class="kr">data</span> <span class="kt">Error</span> <span class="ow">=</span> <span class="kt">ErrorA</span> <span class="o">|</span> <span class="kt">ErrorB</span>
 
-<span class="kr">type</span> <span class="kt">Result</span> <span class="n">a</span> <span class="o">=</span> <span class="kt">Either</span> <span class="kt">Error</span> <span class="n">a</span>
+<span class="kr">type</span> <span class="kt">Result</span> <span class="n">a</span> <span class="ow">=</span> <span class="kt">Either</span> <span class="kt">Error</span> <span class="n">a</span>
 
-<span class="n">do_something</span> <span class="o">::</span> <span class="kt">Result</span> <span class="n">a</span>
+<span class="nf">do_something</span> <span class="ow">::</span> <span class="kt">Result</span> <span class="n">a</span>
 
-<span class="n">main</span> <span class="o">=</span> <span class="kr">let</span> <span class="n">res</span> <span class="o">=</span> <span class="n">do_something</span> <span class="kr">in</span>
+<span class="nf">main</span> <span class="ow">=</span> <span class="kr">let</span> <span class="n">res</span> <span class="ow">=</span> <span class="n">do_something</span> <span class="kr">in</span>
   <span class="kr">case</span> <span class="n">res</span> <span class="kr">of</span>
-    <span class="kt">Right</span> <span class="kr">_</span> <span class="o">-&gt;</span> <span class="n">print</span> <span class="s">"ok"</span>
-    <span class="kt">Left</span> <span class="kt">ErrorA</span> <span class="o">-&gt;</span> <span class="n">print</span> <span class="s">"ErrorA"</span>
-    <span class="kt">Left</span> <span class="kt">ErrorB</span> <span class="o">-&gt;</span> <span class="n">print</span> <span class="s">"ErrorB"</span></code></pre></figure>
+    <span class="kt">Right</span> <span class="kr">_</span> <span class="ow">-&gt;</span> <span class="n">print</span> <span class="s">&quot;ok&quot;</span>
+    <span class="kt">Left</span> <span class="kt">ErrorA</span> <span class="ow">-&gt;</span> <span class="n">print</span> <span class="s">&quot;ErrorA&quot;</span>
+    <span class="kt">Left</span> <span class="kt">ErrorB</span> <span class="ow">-&gt;</span> <span class="n">print</span> <span class="s">&quot;ErrorB&quot;</span></code></pre></figure>
 
 <p>我们错误处理的需求是：当程序出错时，需要进入另外的执行流进行处理（可能要区分错误类型），这两段程序分别通过各自语言提供的特性，较为优雅的实现了这一点。
 这两段程序虽然运用特性不同，但实现的功能相同，体现了两种编程范式的殊途同归。</p>
@@ -249,38 +304,20 @@
 
 <figure class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span> <span class="k">class</span> <span class="nc">Optional</span> <span class="p">{</span>
     <span class="k">public</span><span class="o">:</span>
-        <span class="c1">//invalid
-</span>        <span class="n">Optional</span><span class="p">()</span><span class="o">:</span><span class="n">valid</span><span class="p">(</span><span class="nb">false</span><span class="p">)</span> <span class="p">{}</span>
+        <span class="c1">//invalid</span>
+        <span class="n">Optional</span><span class="p">()</span><span class="o">:</span><span class="n">valid</span><span class="p">(</span><span class="nb">false</span><span class="p">)</span> <span class="p">{}</span>
 
-        <span class="c1">//valid value
-</span>        <span class="n">Optional</span><span class="p">(</span><span class="k">const</span> <span class="n">T</span> <span class="o">&amp;</span> <span class="n">value</span><span class="p">)</span><span class="o">:</span><span class="n">valid</span><span class="p">(</span><span class="nb">true</span><span class="p">),</span> <span class="n">content</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="p">{}</span>
+        <span class="c1">//valid value</span>
+        <span class="n">Optional</span><span class="p">(</span><span class="k">const</span> <span class="n">T</span> <span class="o">&amp;</span> <span class="n">value</span><span class="p">)</span><span class="o">:</span><span class="n">valid</span><span class="p">(</span><span class="nb">true</span><span class="p">),</span> <span class="n">content</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="p">{}</span>
 
-        <span class="k">operator</span> <span class="n">bool</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">valid</span><span class="p">;</span> <span class="p">}</span>
+        <span class="k">operator</span> <span class="kt">bool</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">valid</span><span class="p">;</span> <span class="p">}</span>
 
         <span class="k">const</span> <span class="n">T</span> <span class="o">&amp;</span> <span class="k">operator</span><span class="o">*</span><span class="p">();</span>
 <span class="p">};</span>
 
 <span class="n">Optional</span><span class="o">&lt;</span><span class="n">Value</span><span class="o">&gt;</span> <span class="n">get</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span> <span class="n">key</span><span class="p">);</span>
 
-<span class="kt">int</span> <span class="n">t</span> <span class="o">=</span> <span class="n">db</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">input</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">c_str</span><span class="p">());</span> <span class="o">//</span><span class="err">为何可以通过编译？</span></code></pre></figure>
-
-
-    
-    </div>
-  </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/2015/06/09/continuation/">
-        一些乱搞的产物
-      </a>
-    </h1>
-
-    <span class="post-date">09 Jun 2015</span>
-    <div class="post-content-truncate">
-    
-      <p>昨天，看了一些资料，感觉自己对 continuation 有了一些想法，感觉可以给之前的解释器加上，
-于是迫不及待的行动了起来。</p>
+<span class="kt">int</span> <span class="n">t</span> <span class="o">=</span> <span class="n">db</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">input</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">c_str</span><span class="p">());</span> <span class="c1">//为何可以通过编译？</span></code></pre></figure>
 
 
     
