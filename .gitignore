@@ -1,5 +1,6 @@
 *.o
 /_cache/
+/_site/
 /stack.yaml
 /site.hi
 /site
