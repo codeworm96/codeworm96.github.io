@@ -1,0 +1,6 @@
+*.o
+/_cache/
+/stack.yaml
+/site.hi
+/site
+/.stack-work/
