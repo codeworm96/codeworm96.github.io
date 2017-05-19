@@ -13,6 +13,8 @@ excited, 而且感觉前途没有希望，既然没有已经是没有学术理�
 总的来说一共投了 Google, Morgan Stanley, 依图，PingCAP，阿里，心动，Microsoft
 7 家公司吧。
 
+<!--more-->
+
 ## Google
 
 和 Google 的缘分，要追溯到 APAC test(现在叫 Kickstart 了), 这其实是它们校园招聘的笔试，
