@@ -89,7 +89,7 @@ Currently, our goroutine runs forever. We can stop it using another channel.
 ```go
 func main() {
 	var wg WaitGroupWrapper
-	done := make(chan bool)
+	done := make(chan struct{})
 	ticker := time.NewTicker(5 * time.Second)
 	wg.Spawn(func() {
 		for {
@@ -103,7 +103,7 @@ func main() {
 	exit:
 	})
 	time.Sleep(16 * time.Second)
-	done <- true
+	close(done)
 	wg.Wait()
 }
 ```
