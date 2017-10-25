@@ -1,5 +1,5 @@
 ---
-title: Go: tasks repeated at intervals
+title: "Go: tasks repeated at intervals"
 tags: go
 ---
 
