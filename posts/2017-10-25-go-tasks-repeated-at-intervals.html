@@ -116,7 +116,7 @@ wg.Spawn(<span class="kw">func</span>() {
 <p>Currently, our goroutine runs forever. We can stop it using another channel.</p>
 <div class="sourceCode"><pre class="sourceCode go"><code class="sourceCode go"><span class="kw">func</span> main() {
 	<span class="kw">var</span> wg WaitGroupWrapper
-	done := <span class="bu">make</span>(<span class="kw">chan</span> <span class="dt">bool</span>)
+	done := <span class="bu">make</span>(<span class="kw">chan</span> <span class="kw">struct</span>{})
 	ticker := time.NewTicker(<span class="dv">5</span> * time.Second)
 	wg.Spawn(<span class="kw">func</span>() {
 		<span class="kw">for</span> {
@@ -130,7 +130,7 @@ wg.Spawn(<span class="kw">func</span>() {
 	exit:
 	})
 	time.Sleep(<span class="dv">16</span> * time.Second)
-	done &lt;- <span class="ot">true</span>
+	<span class="bu">close</span>(done)
 	wg.Wait()
 }</code></pre></div>
       </div>
