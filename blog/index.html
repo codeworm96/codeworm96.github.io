@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>codeworm96's blog</title>
+
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
+    <link href="../css/syntax.css" rel="stylesheet">
+    <link rel="shortcut icon" href="../img/favicon.ico">
+  </head>
+  <body>
+    <nav class="navbar navbar-default" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../">
+            <img class="avatar" src="../img/avatar.png">
+            codeworm96's blog
+          </a>
+        </div>
+        <div class="navbar-collapse collapse navbar-right">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="../blog">BLOG</a></li>
+            <li><a href="../archive.html">ARCHIVE</a></li>
+            <li><a href="../tagcloud.html">TAGS</a></li>
+            <li><a href="../index.html">ABOUT</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+<div class="container">
+  <div class="row">
+    <div class="
+    col-lg-8 col-lg-offset-2
+    col-md-10 col-md-offset-1
+    ">
+    
+      <div>
+        <a href="../posts/2017-10-25-go-tasks-repeated-at-intervals.html"><h1 class="post-title">Go: tasks repeated at intervals</h1></a>
+        <div class="post-date">
+          <span class="glyphicon glyphicon-calendar"></span> October 25, 2017
+        </div>
+
+        <div class="post">
+          
+            <p>Suppose we would like to perform a task repeatedly at regular intervals with a goroutine.</p>
+ &hellip;
+          
+        </div>
+
+        
+          <a href="../posts/2017-10-25-go-tasks-repeated-at-intervals.html">[read more]</a>
+        
+
+        <div class="tag-links"><a href="../tags/go.html">go</a></div>
+      </div>
+      <hr>
+    
+      <div>
+        <a href="../posts/2017-09-27-lexer-parser.html"><h1 class="post-title">谈 lexer & parser</h1></a>
+        <div class="post-date">
+          <span class="glyphicon glyphicon-calendar"></span> September 27, 2017
+        </div>
+
+        <div class="post">
+          
+            <p>不知道为何自己面试时总是遇到写 lexer &amp; parser 有关的问题… 据院长说，大部分中国大学的编译原理课程设置，大部分都是在讲文法，而忽视了 backend. 虽然我们学院的课程设置是从前到后一个完整的编译器实现，但是我还是有自信， 在 lexer &amp; parser 知识上是没有短板的。而且 parser 作为一个已经成熟的领域， 不像系统还在发展中，理应不会有太多的不确定。</p>
+<p>在微软的面试中，我开始想用 parser combinator 被说不太好，最后还是用了传统的编译原理方法。 这个我认为可以理解，毕竟 parser combinator 对不熟悉函数式风格的人来说确实不易理解。 但是昨天的面试中，我使用传统的 lexer &amp; parser 方法没有得到理解。因此我觉得有必要为其正名。</p>
+<h1 id="lexer">lexer</h1>
+<p>这里的问题是写 lexer 支持解析出浮点数，变量名，操作符。 我的做法是先写出各自的正则文法，然后转 dfa. 而面试官希望的做法是手动写出状态机的逻辑。</p>
+<p>首先我要说明的是，正则文法（注意某些加了扩展的正则表达式实现不算）和 dfa 是等价的， 这个证明非常容易，因为存在两者互相转换的算法，算法具体是怎样，这里不做展开， 应该任意编译原理的书都有涉及。所以用正则文法还是 dfa 表达完全是个人偏好/习惯问题。 一个人上来先写 dfa 还是正则并不是一个能区分水平的点。</p>
+<p>其次正则 -&gt; nfa -&gt; dfa -&gt; dfa最简化，这一套流程完全可以编译时完成，运行时查状态转移表即可， 和 hardcode dfa 性能同级，所以性能问题是不易担心的，这也是 flex 的流程。而且，直接写 dfa 的一个问题是，你无法保证自己一下子就能写出最简的 dfa，dfa 简化依然是必要的流程。</p>
+<p>至于匹配过程需要回溯，这个是 lexer 必须的，与匹配方式无关，无法避免，因为 lexer 必须找到 longest match，那就必须到匹配失败的地方才能判定。比如 if8, 显然 i 匹配变量名规则， 但我们还不能确定，if 匹配 if ，但我们还不能确定，if8 匹配变量名规则，但我们还不能确定， 然后我们遇到结尾匹配失败，这时我们才能确定 if8 作为一个变量名。</p>
+<p>关于这两种方法，我的观点是两者都可以实现需求，性能相近，运用 flex 这一套流程并不比手动写出状态机的逻辑差。 因为其依赖的理论成熟，且有成熟的工具，方法系统性强，所以不需要太多技巧，但是不能因此就否认其价值。 而且正因为方法的系统，使我们不会忽略了 dfa 的最简化。</p>
+<h1 id="parser">parser</h1>
+<p>这里的问题是要写一个表达式计算器。我的方法是手写递归下降，而面试官认为 <a href="https://en.wikipedia.org/wiki/Shunting-yard_algorithm">Shunting-yard_algorithm</a> 比这个要强。但是如果我们找一个表达式进行模拟，对比二者的执行过程会发现是殊途同归的， Shunting-yard algorithm 多看一个判断是出栈还是入栈，递归下降多看一个，判断是调用新的规则， 还是当前规则完成返回。二者唯一的区别在于栈是自己维护还是用调用栈，性能区别可以说是微乎其微吧， 除非特别关心函数调用的开销。个人认为递归下降更容易扩展，更好理解与实现，写这个无可非议。 而 Shunting-yard algorithm 也确实非常巧妙，但是不容忽视的是，其扩展很困难很 tricky， 这也是我在面对有追问的情况下，排除使用它的原因。</p>
+<p>总之，个人认为面对一些有多种解法的问题，遇到与自己的想法或所谓“标准答案”不一致的解法，应该有一个开放的心态， 好好探讨一下各自的优势与不足，而不是急于去否定。系统性的方法或许不够巧妙，但是只要按照方法去做， 也是能有效地解决问题的，并且也是更易于理解易于维护的。</p>
+          
+        </div>
+
+        
+
+        <div class="tag-links"><a href="../tags/internship.html">internship</a><a href="../tags/interview.html">interview</a><a href="../tags/lexer.html">lexer</a><a href="../tags/parser.html">parser</a></div>
+      </div>
+      <hr>
+    
+      <div>
+        <a href="../posts/2017-06-15-HSoM.html"><h1 class="post-title">「预告」 SJTUG暑期课堂之 Haskell School of Music</h1></a>
+        <div class="post-date">
+          <span class="glyphicon glyphicon-calendar"></span> June 15, 2017
+        </div>
+
+        <div class="post">
+          
+            <p>非常有幸被拉去负责一次 SJTUG 暑期课堂的分享，想了很久终于选定 Haskell School of Music 作为此次分享的主题。</p>
+<p>内容的话，大约是基于 <a href="http://haskell.cs.yale.edu/wp-content/uploads/2015/03/HSoM.pdf">Haskell School of Music</a> 这本书的内容，探讨用程序语言的方式对音乐进行抽象。(具体的不能透露更多了，因为我还没准备好…之后会在这里更新)</p>
+<p>本次分享的定位是面向零基础的同学，力求做到内容自包含。(是的，编程和音乐理论你可以都不懂！而且，个人认为不会“编程”反而更合适，没有被副作用污染的大脑最棒了) 水平比较高的听众可能要失望了，因为本次的内容并不会很深。(不仅是定位问题，而且因为我在这两方面水平都比较低，也讲不动)</p>
+<p>那么接下来是这个活动的详细信息:</p>
+<ul>
+<li>日期: 7月13日（21周周四）</li>
+<li>地点: 东上309</li>
+<li><a href="https://wj.qq.com/s/1401085/f0a5">报名链接</a></li>
+</ul>
+<p>期待与您相见。</p>
+          
+        </div>
+
+        
+
+        <div class="tag-links"><a href="../tags/functional%20programming.html">functional programming</a><a href="../tags/haskell.html">haskell</a><a href="../tags/music.html">music</a></div>
+      </div>
+      <hr>
+    
+      <div>
+        <a href="../posts/2017-05-14-internship.html"><h1 class="post-title">大三，寻找实习的经历</h1></a>
+        <div class="post-date">
+          <span class="glyphicon glyphicon-calendar"></span> May 14, 2017
+        </div>
+
+        <div class="post">
+          
+            <p>首先要说的是，这里不会描述具体的面试题目，因为这种东西各家公司都是要求不透露的。 因此，这不是一篇传统意义上的所谓“面试经验”，仅仅是想记录一下个人在这个过程中的感受。 如果这能对您有用，那当然是更好啦。</p>
+<p>决定暑假去实习，一是有学院的要求，二是通过在学校实验室的体验，感觉搞学术并不能使自己 excited, 而且感觉前途没有希望，既然没有已经是没有学术理想的咸鱼了，那还是早点到工业界体验的好。</p>
+<p>总的来说一共投了 Google, Morgan Stanley, 依图，PingCAP，阿里，心动，Microsoft 7 家公司吧。</p>
+ &hellip;
+          
+        </div>
+
+        
+          <a href="../posts/2017-05-14-internship.html">[read more]</a>
+        
+
+        <div class="tag-links"><a href="../tags/internship.html">internship</a></div>
+      </div>
+      <hr>
+    
+      <div>
+        <a href="../posts/2017-05-01-3rd-fp-meetup.html"><h1 class="post-title">蒟蒻所见的第三届函数式编程分享</h1></a>
+        <div class="post-date">
+          <span class="glyphicon glyphicon-calendar"></span> May  1, 2017
+        </div>
+
+        <div class="post">
+          
+            <p>-- 简单记录下个人的理解，某些地方可能不对…</p>
+ &hellip;
+          
+        </div>
+
+        
+          <a href="../posts/2017-05-01-3rd-fp-meetup.html">[read more]</a>
+        
+
+        <div class="tag-links"><a href="../tags/functional%20programming.html">functional programming</a><a href="../tags/meetup.html">meetup</a></div>
+      </div>
+      <hr>
+    
+      <div>
+        <a href="../posts/2017-02-19-hello-again.html"><h1 class="post-title">Hello, 世界 (again)</h1></a>
+        <div class="post-date">
+          <span class="glyphicon glyphicon-calendar"></span> February 19, 2017
+        </div>
+
+        <div class="post">
+          
+            <p>已经很久没有写过 blog 了，那么 2017 年的第一篇就当一个新的开始把。 :)</p>
+<p>正好也部署一下新的 static generator 和主题，看了下这两个项目的 mtime 都在去年４月， 也就是拖了快一年，比我主要负责的 <a href="http://sjtug.org/">sjtug 新主页</a> 还要拖…</p>
+<p>为了防止像之前一样坑掉，那么这里先定一个小目标，每个月至少一篇吧。 过去我对 blog 的定位是写技术向的东西，现在看来这样的限制不太现实，所以这里乱七八糟的东西都会写。 不过有了新的 tag 功能，读者还是能方便地找到感兴趣的内容吧…（大概也不会有人看）</p>
+<p>新的这套东西还有待完善，过去的文章还有待迁移，不过为了防止继续坑下去，还是赶紧上线吧。</p>
+          
+        </div>
+
+        
+
+        <div class="tag-links"><a href="../tags/chinese.html">chinese</a><a href="../tags/blog.html">blog</a></div>
+      </div>
+      <hr>
+    
+      <div class="pagination clearfix">                                                                                                     
+        
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <footer class="footer container clearfix">
+    <div class="copyright">
+      <p>@codeworm96 2019</p>
+    </div>
+    <div class="poweredby">
+      Site proudly generated by
+      <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </div>
+  </footer>
+  <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+  <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  </body>
+</html>
