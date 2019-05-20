@@ -28,13 +28,18 @@ main = hakyll $ do
         route   idRoute
         compile compressCssCompiler
 
-    -- TODO
+    match "misc/*" $ do
+        route   idRoute
+        compile copyFileCompiler
+
+    -- About page
     match "about.md" $ do
         let ctx = constField "title" "About"  <>
                       constField "about" "about" <> -- For nav
                       defaultContext
-        route   $ setExtension "html"
+        route   $ constRoute "index.html"
         compile $ pandocMathCompiler
+            >>= loadAndApplyTemplate "templates/about.html" ctx
             >>= loadAndApplyTemplate "templates/default.html" ctx
             >>= relativizeUrls
 
@@ -125,8 +130,8 @@ grouper ids = (liftM (paginateEvery 6) . sortRecentFirst) ids
 
 makeId :: PageNumber -> Identifier
 makeId pageNum = fromFilePath $ if pageNum == 1
-                     then "index.html"
-                     else "page" ++ (show pageNum) ++ "/index.html"
+                     then "blog/index.html"
+                     else "blog/page" ++ (show pageNum) ++ "/index.html"
 
 -- For tag rendering
 simpleRenderLink :: String -> (Maybe FilePath) -> Maybe H.Html
@@ -147,5 +152,3 @@ postCtxWithTags :: Tags -> Context String
 postCtxWithTags tags =
     postTagsField "tags" tags <>
     postCtx
-
-
